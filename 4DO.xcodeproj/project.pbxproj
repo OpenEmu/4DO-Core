@@ -20,16 +20,16 @@
 			name = Distribution;
 			productName = Distribution;
 		};
-		82B9195310150EA2007BD6DB /* Build & Install FreeDO */ = {
+		82B9195310150EA2007BD6DB /* Build & Install 4DO */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 82B9195D10150EA4007BD6DB /* Build configuration list for PBXAggregateTarget "Build & Install FreeDO" */;
+			buildConfigurationList = 82B9195D10150EA4007BD6DB /* Build configuration list for PBXAggregateTarget "Build & Install 4DO" */;
 			buildPhases = (
 				82B9195210150EA2007BD6DB /* ShellScript */,
 			);
 			dependencies = (
 				82B9195F10150EB3007BD6DB /* PBXTargetDependency */,
 			);
-			name = "Build & Install FreeDO";
+			name = "Build & Install 4DO";
 			productName = "Build & Install";
 		};
 /* End PBXAggregateTarget section */
@@ -58,11 +58,7 @@
 		575ACC341582D50400EAC45A /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF91582C37400EAC45A /* time.c */; };
 		575ACC391582D51900EAC45A /* liblibcue.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC271582D4F000EAC45A /* liblibcue.a */; };
 		575ACC3A1582D51900EAC45A /* liblibfreedo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC131582D4BE00EAC45A /* liblibfreedo.a */; };
-		578D12251582B00B003F64E5 /* freedo.icns in Resources */ = {isa = PBXBuildFile; fileRef = 578D12241582B00B003F64E5 /* freedo.icns */; };
 		57C189551581E581007AC24B /* freedoconfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57C189541581E581007AC24B /* freedoconfig.cpp */; };
-		8230C69910AFBC3A00412F24 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 8230C69810AFBC3A00412F24 /* dsa_pub.pem */; };
-		8230C6AE10AFBCE500412F24 /* config.yaml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8230C6AA10AFBCC700412F24 /* config.yaml */; };
-		826FDE5710142B230023A8E9 /* license.txt in Resources */ = {isa = PBXBuildFile; fileRef = 826FDD6D10142B230023A8E9 /* license.txt */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		942597C515146FF40074E3A3 /* OpenEmuBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 942597C415146FF40074E3A3 /* OpenEmuBase.framework */; };
@@ -116,7 +112,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				8230C6AE10AFBCE500412F24 /* config.yaml in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,7 +140,6 @@
 		575ACC0E1582C3A100EAC45A /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = "libcue-1.4.0/config.h"; sourceTree = SOURCE_ROOT; };
 		575ACC131582D4BE00EAC45A /* liblibfreedo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibfreedo.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		575ACC271582D4F000EAC45A /* liblibcue.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibcue.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		578D12241582B00B003F64E5 /* freedo.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = freedo.icns; sourceTree = SOURCE_ROOT; };
 		578D12271582B03E003F64E5 /* _3do_sys.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = _3do_sys.cpp; sourceTree = "<group>"; };
 		578D12281582B03E003F64E5 /* arm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = arm.cpp; sourceTree = "<group>"; };
 		578D12291582B03E003F64E5 /* arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = arm.h; sourceTree = "<group>"; };
@@ -173,13 +167,10 @@
 		578D12411582B03F003F64E5 /* XBUS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBUS.cpp; sourceTree = "<group>"; };
 		578D12421582B03F003F64E5 /* XBUS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBUS.h; sourceTree = "<group>"; };
 		57C189541581E581007AC24B /* freedoconfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = freedoconfig.cpp; sourceTree = "<group>"; };
-		8230C69810AFBC3A00412F24 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
-		8230C6AA10AFBCC700412F24 /* config.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.yaml; sourceTree = "<group>"; };
-		826FDD6D10142B230023A8E9 /* license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
 		826FE0F31014D8930023A8E9 /* FreeDOGameCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreeDOGameCore.h; sourceTree = "<group>"; };
 		826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FreeDOGameCore.mm; sourceTree = "<group>"; };
 		82B91C841015267F007BD6DB /* libco.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libco.a; sourceTree = "<group>"; };
-		8D5B49B6048680CD000E48DA /* FreeDO.oecoreplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FreeDO.oecoreplugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D5B49B6048680CD000E48DA /* 4DO.oecoreplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = 4DO.oecoreplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		942597C415146FF40074E3A3 /* OpenEmuBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenEmuBase.framework; path = ../OpenEmu/build/Release/OpenEmuBase.framework; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
@@ -218,7 +209,6 @@
 			isa = PBXGroup;
 			children = (
 				08FB77AFFE84173DC02AAC07 /* Classes */,
-				32C88E010371C26100C91783 /* Other Sources */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
@@ -238,7 +228,6 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8230C69810AFBC3A00412F24 /* dsa_pub.pem */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
@@ -254,7 +243,6 @@
 				826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */,
 				57C189541581E581007AC24B /* freedoconfig.cpp */,
 				37E8246D172B7BEB00E58D77 /* OE3DOSystemResponderClient.h */,
-				826FDD6610142B230023A8E9 /* data */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -282,19 +270,11 @@
 		19C28FB8FE9D52D311CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D5B49B6048680CD000E48DA /* FreeDO.oecoreplugin */,
+				8D5B49B6048680CD000E48DA /* 4DO.oecoreplugin */,
 				575ACC131582D4BE00EAC45A /* liblibfreedo.a */,
 				575ACC271582D4F000EAC45A /* liblibcue.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		32C88E010371C26100C91783 /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				8230C6AA10AFBCC700412F24 /* config.yaml */,
-			);
-			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 		575ACBE01582C37400EAC45A /* libcue */ = {
@@ -353,15 +333,6 @@
 			path = libfreedo;
 			sourceTree = "<group>";
 		};
-		826FDD6610142B230023A8E9 /* data */ = {
-			isa = PBXGroup;
-			children = (
-				578D12241582B00B003F64E5 /* freedo.icns */,
-				826FDD6D10142B230023A8E9 /* license.txt */,
-			);
-			path = data;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -416,9 +387,9 @@
 			productReference = 575ACC271582D4F000EAC45A /* liblibcue.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		8D5B49AC048680CD000E48DA /* FreeDO */ = {
+		8D5B49AC048680CD000E48DA /* 4DO */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "FreeDO" */;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "4DO" */;
 			buildPhases = (
 				8D5B49AF048680CD000E48DA /* Resources */,
 				8D5B49B1048680CD000E48DA /* Sources */,
@@ -431,10 +402,10 @@
 				575ACC361582D51000EAC45A /* PBXTargetDependency */,
 				575ACC381582D51000EAC45A /* PBXTargetDependency */,
 			);
-			name = FreeDO;
+			name = 4DO;
 			productInstallPath = "$(HOME)/Library/Bundles";
 			productName = BSNES;
-			productReference = 8D5B49B6048680CD000E48DA /* FreeDO.oecoreplugin */;
+			productReference = 8D5B49B6048680CD000E48DA /* 4DO.oecoreplugin */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -446,7 +417,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 0430;
 			};
-			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "FreeDO" */;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "4DO" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -457,8 +428,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D5B49AC048680CD000E48DA /* FreeDO */,
-				82B9195310150EA2007BD6DB /* Build & Install FreeDO */,
+				8D5B49AC048680CD000E48DA /* 4DO */,
+				82B9195310150EA2007BD6DB /* Build & Install 4DO */,
 				8230C6A110AFBC9100412F24 /* Distribution */,
 				575ACC121582D4BE00EAC45A /* libfreedo */,
 				575ACC261582D4F000EAC45A /* libcue */,
@@ -472,9 +443,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
-				826FDE5710142B230023A8E9 /* license.txt in Resources */,
-				8230C69910AFBC3A00412F24 /* dsa_pub.pem in Resources */,
-				578D12251582B00B003F64E5 /* freedo.icns in Resources */,
 				37E8246E172B7BEB00E58D77 /* OE3DOSystemResponderClient.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -569,12 +537,12 @@
 		};
 		8230C6A510AFBC9600412F24 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8D5B49AC048680CD000E48DA /* FreeDO */;
+			target = 8D5B49AC048680CD000E48DA /* 4DO */;
 			targetProxy = 8230C6A410AFBC9600412F24 /* PBXContainerItemProxy */;
 		};
 		82B9195F10150EB3007BD6DB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8D5B49AC048680CD000E48DA /* FreeDO */;
+			target = 8D5B49AC048680CD000E48DA /* 4DO */;
 			targetProxy = 82B9195E10150EB3007BD6DB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -618,7 +586,7 @@
 					"$(OTHER_CFLAGS)",
 					"-g",
 				);
-				PRODUCT_NAME = FreeDO;
+				PRODUCT_NAME = 4DO;
 				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/core/\" \"$(PROJECT_DIR)/libcue/\"/** \"$(PROJECT_DIR)/libfreedo/\"";
 				WRAPPER_EXTENSION = oecoreplugin;
 			};
@@ -651,7 +619,7 @@
 					"$(OTHER_CFLAGS)",
 					"-g",
 				);
-				PRODUCT_NAME = FreeDO;
+				PRODUCT_NAME = 4DO;
 				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/core/\" \"$(PROJECT_DIR)/libcue/\"/** \"$(PROJECT_DIR)/libfreedo/\"";
 				WRAPPER_EXTENSION = oecoreplugin;
 			};
@@ -801,7 +769,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "FreeDO" */ = {
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "4DO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB913B08733D840010E9CD /* Debug */,
@@ -810,7 +778,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "FreeDO" */ = {
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "4DO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB913F08733D840010E9CD /* Debug */,
@@ -846,7 +814,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		82B9195D10150EA4007BD6DB /* Build configuration list for PBXAggregateTarget "Build & Install FreeDO" */ = {
+		82B9195D10150EA4007BD6DB /* Build configuration list for PBXAggregateTarget "Build & Install 4DO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				82B9195410150EA2007BD6DB /* Debug */,

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2009, OpenEmu Team
+ Copyright (c) 2014, OpenEmu Team
  
 
  Redistribution and use in source and binary forms, with or without
