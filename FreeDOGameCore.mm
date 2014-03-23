@@ -150,34 +150,34 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
                 joybin = _setBitTo(joybin, pushed, PbusButtonAddress_A);
                 break;
             case OE3DOButtonB:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonB);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_B);
                 break;
             case OE3DOButtonC:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonC);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_C);
                 break;
             case OE3DOButtonX:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonX);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_X);
                 break;
             case OE3DOButtonP:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonP);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_P);
                 break;
             case OE3DOButtonLeft:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonLeft);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_Left);
                 break;
             case OE3DOButtonRight:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonRight);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_Right);
                 break;
             case OE3DOButtonUp:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonUp);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_Up);
                 break;
             case OE3DOButtonDown:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonDown);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_Down);
                 break;
             case OE3DOButtonL:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonL);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_L);
                 break;
             case OE3DOButtonR:
-                joybin = _setBitTo(joybin, pushed, OE3DOButtonR);
+                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_R);
                 break;
                 
             default:

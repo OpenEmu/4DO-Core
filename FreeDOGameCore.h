@@ -105,29 +105,17 @@ enum {
 } PhysicalParameters;
 
 enum {
-  /*  PbusButtonAddress_L     = 0x0400,
-    PbusButtonAddress_R     = 0x0800,
-    PbusButtonAddress_X     = 0x1000,
-    PbusButtonAddress_P     = 0x2000,
-    PbusButtonAddress_C     = 0x4000,
-    PbusButtonAddress_B     = 0x8000,
-    PbusButtonAddress_A     = 0x0001,
-    PbusButtonAddress_Left  = 0x0002,
-    PbusButtonAddress_Right = 0x0004,
-    PbusButtonAddress_Up    = 0x0008,
-    PbusButtonAddress_Down  = 0x0010,
-    
-    */PbusButtonAddress_L     = 0x800,
-    PbusButtonAddress_R     = 0x1000,
-    PbusButtonAddress_X     = 0x200,
-    PbusButtonAddress_P     = 0x400,
-    PbusButtonAddress_C     = 0x4,
-    PbusButtonAddress_B     = 0x8,
-    PbusButtonAddress_A     = 0x10,
-    PbusButtonAddress_Left  = 0x20,
-    PbusButtonAddress_Right = 0x100,
-    PbusButtonAddress_Up    = 0x80,
-    PbusButtonAddress_Down  = 0x40,
+    PbusButtonAddress_L     = 0x04,
+    PbusButtonAddress_R     = 0x08,
+    PbusButtonAddress_X     = 0x10,
+    PbusButtonAddress_P     = 0x20,
+    PbusButtonAddress_C     = 0x40,
+    PbusButtonAddress_B     = 0x80,
+    PbusButtonAddress_A     = 0x100,
+    PbusButtonAddress_Left  = 0x200,
+    PbusButtonAddress_Right = 0x400,
+    PbusButtonAddress_Up    = 0x800,
+    PbusButtonAddress_Down  = 0x1000,
 } PbusButtonsAddresses;
 
 
