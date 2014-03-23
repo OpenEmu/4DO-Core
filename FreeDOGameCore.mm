@@ -654,7 +654,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
     }
     else
     {
-        biosRom2Copy = (Byte*)malloc(PhysicalParameters_ROM2_SIZE);
+        biosRom2Copy = (Byte*)malloc(len);
         memset(biosRom2Copy,0,len);
     }
 }
