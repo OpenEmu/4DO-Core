@@ -49,8 +49,6 @@
 	</dict>
 	<key>OEGameCorePlayerCount</key>
 	<string>8</string>
-	<key>OEGameCoreRequiresFiles</key>
-	<true/>
 	<key>OEProjectURL</key>
 	<string>http://www.fourdo.com/</string>
 	<key>OESystemIdentifiers</key>
