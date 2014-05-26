@@ -24,6 +24,29 @@
 	<string>OEGameCoreController</string>
 	<key>OEGameCoreClass</key>
 	<string>FreeDOGameCore</string>
+	<key>OEGameCoreOptions</key>
+	<dict>
+		<key>openemu.system.3do</key>
+		<dict>
+			<key>OEGameCoreHasGlitches</key>
+			<true/>
+			<key>OEGameCoreRequiresFiles</key>
+			<true/>
+			<key>OERequiredFiles</key>
+			<array>
+				<dict>
+					<key>Description</key>
+					<string>Panasonic REAL 3DO Interactive Multiplayer FZ-10 v1.59.1.1</string>
+					<key>MD5</key>
+					<string>51f2f43ae2f3508a14d9f56597e2d3ce</string>
+					<key>Name</key>
+					<string>panafz10.bin</string>
+					<key>Size</key>
+					<integer>1048576</integer>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>OEGameCorePlayerCount</key>
 	<string>8</string>
 	<key>OEGameCoreRequiresFiles</key>

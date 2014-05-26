@@ -759,7 +759,7 @@
 		82B9195410150EA2007BD6DB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "Build & Install";
 			};
 			name = Debug;
@@ -767,7 +767,7 @@
 		82B9195510150EA2007BD6DB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "Build & Install";
 			};
 			name = Release;
