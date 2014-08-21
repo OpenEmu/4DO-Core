@@ -39,7 +39,25 @@
 #define ROM1_SIZE 1 * 1024 * 1024
 #define ROM2_SIZE 933636 //was 1 * 1024 * 1024,
 #define NVRAM_SIZE 32 * 1024
-#define PBUS_DATA_MAX_SIZE 20
+
+#define INPUTBUTTONL     (1<<4)
+#define INPUTBUTTONR     (1<<5)
+#define INPUTBUTTONX     (1<<6)
+#define INPUTBUTTONP     (1<<7)
+#define INPUTBUTTONC     (1<<8)
+#define INPUTBUTTONB     (1<<9)
+#define INPUTBUTTONA     (1<<10)
+#define INPUTBUTTONLEFT  (1<<11)
+#define INPUTBUTTONRIGHT (1<<12)
+#define INPUTBUTTONUP    (1<<13)
+#define INPUTBUTTONDOWN  (1<<14)
+
+typedef struct{
+	int buttons;			/* buttons bitfield */
+    
+}inputState;
+
+inputState internal_input_state[6];
 
 @interface FreeDOGameCore () <OE3DOSystemResponderClient>
 
@@ -65,7 +83,6 @@ FreeDOGameCore *current;
 {
     Byte* biosRom1Copy;
     Byte* biosRom2Copy;
-    volatile unsigned int pbus[5];
     void *nvramCopy;
     VDLFrame *frame;
     
@@ -131,85 +148,94 @@ static void* fdcCallback(int procedure, void* data)
     return (void*)0;
 }
 
-unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
-{
-    if(set)
-        return storage|bitmask;
-    else
-        return storage;
-}
-
-- (oneway void)button:(OE3DOButton)button forPlayer:(NSUInteger)player pushed:(BOOL) pushed
-{
-    int i;
-
-    for(i=0;i<1;i++)
-    {
-        unsigned int joybin=0x8000;
-        if(i==player-1)
-        {
-            switch(button)
-            {
-            case OE3DOButtonA:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_A);
-                break;
-            case OE3DOButtonB:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_B);
-                break;
-            case OE3DOButtonC:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_C);
-                break;
-            case OE3DOButtonX:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_X);
-                break;
-            case OE3DOButtonP:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_P);
-                break;
-            case OE3DOButtonLeft:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_Left);
-                break;
-            case OE3DOButtonRight:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_Right);
-                break;
-            case OE3DOButtonUp:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_Up);
-                break;
-            case OE3DOButtonDown:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_Down);
-                break;
-            case OE3DOButtonL:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_L);
-                break;
-            case OE3DOButtonR:
-                joybin = _setBitTo(joybin, pushed, PbusButtonAddress_R);
-                break;
-                
-            default:
-                break;
-            }
-        }
-        if(i&1)
-            pbus[i>>1]=(pbus[i>>1]&0xffff0000)|joybin;
-        else
-            pbus[i>>1]=(pbus[i>>1]&0xffff)|(joybin<<16);
-    }
-    for(;i<10;i++)
-    {
-        if(i&1)
-            pbus[i>>1]=(pbus[i>>1]&0xffff0000)|0xffff;
-        else
-            pbus[i>>1]=(pbus[i>>1]&0xffff)|(0xffff<<16);
-    }
-}
-
 - (oneway void)didRelease3DOButton:(OE3DOButton)button forPlayer:(NSUInteger)player
-{ 
-    [self button:button forPlayer:player pushed:NO];
+{
+    player--;
+    
+    switch(button)
+    {
+        case OE3DOButtonA:
+            internal_input_state[0].buttons&=~INPUTBUTTONA;
+            break;
+        case OE3DOButtonB:
+            internal_input_state[0].buttons&=~INPUTBUTTONB;
+            break;
+        case OE3DOButtonC:
+            internal_input_state[0].buttons&=~INPUTBUTTONC;
+            break;
+        case OE3DOButtonX:
+            internal_input_state[0].buttons&=~INPUTBUTTONX;
+            break;
+        case OE3DOButtonP:
+            internal_input_state[0].buttons&=~INPUTBUTTONP;
+            break;
+        case OE3DOButtonLeft:
+            internal_input_state[0].buttons&=~INPUTBUTTONLEFT;
+            break;
+        case OE3DOButtonRight:
+            internal_input_state[0].buttons&=~INPUTBUTTONRIGHT;
+            break;
+        case OE3DOButtonUp:
+            internal_input_state[0].buttons&=~INPUTBUTTONUP;
+            break;
+        case OE3DOButtonDown:
+            internal_input_state[0].buttons&=~INPUTBUTTONDOWN;
+            break;
+        case OE3DOButtonL:
+            internal_input_state[0].buttons&=~INPUTBUTTONL;
+            break;
+        case OE3DOButtonR:
+            internal_input_state[0].buttons&=~INPUTBUTTONR;
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (oneway void)didPush3DOButton:(OE3DOButton)button forPlayer:(NSUInteger)player
-{ 
-    [self button:button forPlayer:player pushed:YES];
+{
+    player--;
+    
+    switch(button)
+    {
+        case OE3DOButtonA:
+            internal_input_state[0].buttons|=INPUTBUTTONA;
+            break;
+        case OE3DOButtonB:
+            internal_input_state[0].buttons|=INPUTBUTTONB;
+            break;
+        case OE3DOButtonC:
+            internal_input_state[0].buttons|=INPUTBUTTONC;
+            break;
+        case OE3DOButtonX:
+            internal_input_state[0].buttons|=INPUTBUTTONX;
+            break;
+        case OE3DOButtonP:
+            internal_input_state[0].buttons|=INPUTBUTTONP;
+            break;
+        case OE3DOButtonLeft:
+            internal_input_state[0].buttons|=INPUTBUTTONLEFT;
+            break;
+        case OE3DOButtonRight:
+            internal_input_state[0].buttons|=INPUTBUTTONRIGHT;
+            break;
+        case OE3DOButtonUp:
+            internal_input_state[0].buttons|=INPUTBUTTONUP;
+            break;
+        case OE3DOButtonDown:
+            internal_input_state[0].buttons|=INPUTBUTTONDOWN;
+            break;
+        case OE3DOButtonL:
+            internal_input_state[0].buttons|=INPUTBUTTONL;
+            break;
+        case OE3DOButtonR:
+            internal_input_state[0].buttons|=INPUTBUTTONR;
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (id)init
@@ -571,22 +597,80 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (intptr_t)fdcCallbackGetPbusLength
 {
-    return PBUS_DATA_MAX_SIZE;
+    return 16;
+}
+
+int CheckDownButton(int deviceNumber,int button)
+{
+    
+	if(internal_input_state[deviceNumber].buttons&button) return 1;
+	else return 0;
+	
+    
+}
+
+char CalculateDeviceLowByte(int deviceNumber)
+{
+	char returnValue = 0;
+    
+    //	if (deviceNumber >= deviceCount)
+    //		return returnValue;
+    
+    returnValue |= 0x01 & 0; // unknown
+    returnValue |= 0x02 & 0; // unknown
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONL) ? (char)0x04 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONR) ? (char)0x08 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONX) ? (char)0x10 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONP) ? (char)0x20 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONC) ? (char)0x40 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONB) ? (char)0x80 : (char)0;
+
+    return returnValue;
+}
+
+char CalculateDeviceHighByte(int deviceNumber)
+{
+	char returnValue = 0;
+    
+    //	if (deviceNumber >= deviceCount)
+    //		return returnValue;
+    
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONA)     ? (char)0x01 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONLEFT)  ? (char)0x02 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONRIGHT) ? (char)0x04 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONUP)    ? (char)0x08 : (char)0;
+    returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONDOWN)  ? (char)0x10 : (char)0;
+    returnValue |= 0x20 & 0; // unknown
+    returnValue |= 0x40 & 0; // unknown
+    returnValue |= 0x80; // This last bit seems to indicate power and/or connectivity.
+
+    return returnValue;
 }
 
 - (void *)fdcCallbackGetPbus
-{    
-    int i;
-    for(i = 0; i < PBUS_DATA_MAX_SIZE; i++)
-    {
-        if (i > 0)
-            printf(":");
-
-        printf("%02X", pbus[i]);
-    }
-    printf("\n");
+{
+    // Set up raw data to return
+    unsigned char *data;
+    data = (unsigned char *)malloc(sizeof(unsigned char)*16);
     
-    return (void*)pbus;
+    data[0x0] = 0x00;
+	data[0x1] = 0x48;
+	data[0x2] = CalculateDeviceLowByte(0);
+	data[0x3] = CalculateDeviceHighByte(0);
+	data[0x4] = CalculateDeviceLowByte(2);
+	data[0x5] = CalculateDeviceHighByte(2);
+	data[0x6] = CalculateDeviceLowByte(1);
+	data[0x7] = CalculateDeviceHighByte(1);
+	data[0x8] = CalculateDeviceLowByte(4);
+	data[0x9] = CalculateDeviceHighByte(4);
+	data[0xA] = CalculateDeviceLowByte(3);
+	data[0xB] = CalculateDeviceHighByte(3);
+	data[0xC] = 0x00;
+	data[0xD] = 0x80;
+	data[0xE] = CalculateDeviceLowByte(5);
+	data[0xF] = CalculateDeviceHighByte(5);
+    
+    return data;
 }
 
 //FIXME: Audio need some work
@@ -625,7 +709,6 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (void)initPBusAndNVRAM
 {
-    memset((void*)pbus,0xff,PBUS_DATA_MAX_SIZE);
     nvramCopy = malloc(65536/2);
     memset(nvramCopy,0,65536/2);
     memcpy(nvramCopy,nvramhead,sizeof(nvramhead));

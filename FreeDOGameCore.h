@@ -48,22 +48,6 @@ struct VolumeHeader             // 132 bytes
     UInt32 rootDirCopies[8];    // 32 bytes
 };
 
-enum {
-    PbusButtonAddress_L     = 0x04,
-    PbusButtonAddress_R     = 0x08,
-    PbusButtonAddress_X     = 0x10,
-    PbusButtonAddress_P     = 0x20,
-    PbusButtonAddress_C     = 0x40,
-    PbusButtonAddress_B     = 0x80,
-    PbusButtonAddress_A     = 0x100,
-    PbusButtonAddress_Left  = 0x200,
-    PbusButtonAddress_Right = 0x400,
-    PbusButtonAddress_Up    = 0x800,
-    PbusButtonAddress_Down  = 0x1000,
-} PbusButtonsAddresses;
-
-
-
 unsigned char nvramhead[]=
 {
     0x01,0x5a,0x5a,0x5a,0x5a,0x5a,0x02,0,0,0,0,0,0,0,0,0,
