@@ -30,10 +30,6 @@
 
 @class OERingBuffer;
 
-#define SCREEN_WIDTH  320
-#define SCREEN_HEIGHT 240
-
-
 struct VolumeHeader             // 132 bytes
 {
     Byte recordType;            // 1 byte
@@ -137,13 +133,4 @@ unsigned char nvramhead[]=
 
 OE_EXPORTED_CLASS
 @interface FreeDOGameCore : OEGameCore
-{
-    @public
-    char *videoBuffer;
-    int videoWidth, videoHeight;
-    NSString *romName;
-    double sampleRate;
-}
-
-
 @end

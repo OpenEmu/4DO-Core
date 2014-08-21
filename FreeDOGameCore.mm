@@ -74,6 +74,8 @@ FreeDOGameCore *current;
     
     int fver1,fver2;
 
+    uint32_t *videoBuffer;
+    int videoWidth, videoHeight;
     //uintptr_t sampleBuffer[TEMP_BUFFER_SIZE];
     int32_t sampleBuffer[TEMP_BUFFER_SIZE];
     uint sampleCurrent;
@@ -298,7 +300,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
             struct BitmapCrop bmpcrop;
             ScalingAlgorithm sca;
             int rw, rh;
-            Get_Frame_Bitmap((VDLFrame *)frame, videoBuffer, 0, &bmpcrop, SCREEN_WIDTH, SCREEN_HEIGHT, false, false, false, sca, &rw, &rh);
+            Get_Frame_Bitmap((VDLFrame *)frame, videoBuffer, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
             fver1++;
         }
     }
@@ -308,12 +310,12 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (OEIntRect)screenRect
 {
-    return OEIntRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    return OEIntRectMake(0, 0, videoWidth, videoHeight);
 }
 
 - (OEIntSize)bufferSize
 {
-    return OEIntSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT);
+    return OEIntSizeMake(videoWidth, videoHeight);
 }
 
 
@@ -351,17 +353,17 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (GLenum)pixelFormat
 {
-    return GL_BGR;
+    return GL_BGRA;
 }
 
 - (GLenum)pixelType
 {
-    return GL_UNSIGNED_BYTE;
+    return GL_UNSIGNED_INT_8_8_8_8_REV;
 }
 
 - (GLenum)internalPixelFormat
 {
-    return GL_RGB;
+    return GL_RGB8;
 }
 
 - (NSTimeInterval)frameInterval
@@ -606,7 +608,10 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
     if(videoBuffer)
         free(videoBuffer);
 
-    videoBuffer = (char*)malloc(SCREEN_WIDTH * SCREEN_HEIGHT * 4);
+    //HightResMode = 1;
+    videoWidth = 320;
+    videoHeight = 240;
+    videoBuffer = (uint32_t*)malloc(videoWidth * videoHeight * 4);
     frame = new VDLFrame;
     fver2=fver1=0;
 }
