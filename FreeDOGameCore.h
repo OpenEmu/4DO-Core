@@ -48,58 +48,6 @@ struct VolumeHeader             // 132 bytes
     UInt32 rootDirCopies[8];    // 32 bytes
 };
 
-
-typedef enum 
-{
-    InterfaceFunction_FDP_FREEDOCORE_VERSION = 0,
-    InterfaceFunction_FDP_INIT = 1,                 //set ext_interface
-    InterfaceFunction_FDP_DESTROY = 2,
-    InterfaceFunction_FDP_DO_EXECFRAME = 3,         //execute 1/60 of second
-    InterfaceFunction_FDP_DO_FRAME_MT = 4,          //multitasking
-    InterfaceFunction_FDP_DO_EXECFRAME_MT = 5,      //multitasking
-    InterfaceFunction_FDP_DO_LOAD = 6,              //load state from buffer, returns !NULL if everything went smooth
-    InterfaceFunction_FDP_GET_SAVE_SIZE = 7,        //return size of savestatemachine
-    InterfaceFunction_FDP_DO_SAVE = 8,              //save state to buffer
-    InterfaceFunction_FDP_GETP_NVRAM = 9,           //returns ptr to NVRAM 32K
-    InterfaceFunction_FDP_GETP_RAMS = 10,           //returns ptr to RAM 3M
-    InterfaceFunction_FDP_GETP_ROMS = 11,           //returns ptr to ROM 2M
-    InterfaceFunction_FDP_GETP_PROFILE = 12,        //returns profile pointer, sizeof = 3M/4
-    InterfaceFunction_FDP_BUGTEMPORALFIX = 13,      // JMK NOTE: Unused?
-    InterfaceFunction_FDP_SET_ARMCLOCK = 14,
-    InterfaceFunction_FDP_SET_TEXQUALITY = 15,
-    InterfaceFunction_FDP_GETP_WRCOUNT = 16,        // JMK NOTE: Unused?
-    InterfaceFunction_FDP_SET_FIX_MODE = 17,
-    InterfaceFunction_FDP_GET_FRAME_BITMAP = 18
-} InterfaceFunction;
-
-enum
-{
-    ExternalFunction_EXT_READ_ROMS = 1,
-    ExternalFunction_EXT_READ_NVRAM = 2,
-    ExternalFunction_EXT_WRITE_NVRAM = 3,
-    ExternalFunction_EXT_SWAPFRAME = 5,             //frame swap (in mutlithreaded) or frame draw(single treaded)
-    ExternalFunction_EXT_PUSH_SAMPLE = 6,           //sends sample to the buffer
-    ExternalFunction_EXT_GET_PBUSLEN = 7,
-    ExternalFunction_EXT_GETP_PBUSDATA = 8,
-    ExternalFunction_EXT_KPRINT = 9,
-    ExternalFunction_EXT_DEBUG_PRINT = 10,
-    ExternalFunction_EXT_FRAMETRIGGER_MT = 12,      //multitasking
-    ExternalFunction_EXT_READ2048 = 14,             //for XBUS Plugin
-    ExternalFunction_EXT_GET_DISC_SIZE = 15,
-    ExternalFunction_EXT_ON_SECTOR = 16,
-    ExternalFunction_EXT_ARM_SYNC = 17,
-    ExternalFunction_FDP_GET_FRAME_BITMAP = 18
-} ExternalFunction;
-
-enum {
-    PhysicalParameters_ROM1_SIZE = 1 * 1024 * 1024,
-    PhysicalParameters_ROM2_SIZE = 933636,          //was 1 * 1024 * 1024,
-    PhysicalParameters_NVRAM_SIZE = 32 * 1024,
-    PhysicalParameters_PBUS_DATA_MAX_SIZE = 20,
-    
-    PhysicalParameters_TARGET_FRAMES_PER_SECOND = 60,
-} PhysicalParameters;
-
 enum {
     PbusButtonAddress_L     = 0x04,
     PbusButtonAddress_R     = 0x08,

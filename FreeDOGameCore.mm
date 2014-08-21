@@ -36,6 +36,10 @@
 #include "cd.h"
 
 #define TEMP_BUFFER_SIZE 5512
+#define ROM1_SIZE 1 * 1024 * 1024
+#define ROM2_SIZE 933636 //was 1 * 1024 * 1024,
+#define NVRAM_SIZE 32 * 1024
+#define PBUS_DATA_MAX_SIZE 20
 
 @interface FreeDOGameCore () <OE3DOSystemResponderClient>
 
@@ -85,39 +89,39 @@ static void* fdcCallback(int procedure, void* data)
 {
     switch(procedure)
     {
-        case ExternalFunction_EXT_KPRINT:
-            [current fdcCallbackKPrint:data];
-            break;
-        case ExternalFunction_EXT_READ_ROMS:
+        case EXT_READ_ROMS:
             [current fdcCallbackReadROM:data];
             break;
-        case ExternalFunction_EXT_READ_NVRAM:
+        case EXT_READ_NVRAM:
             [current fdcCallbackReadNVRAM:data];
             break;
-        case ExternalFunction_EXT_WRITE_NVRAM:
+        case EXT_WRITE_NVRAM:
             [current fdcCallbackWriteNVRAM:data];
             break;
-        case ExternalFunction_EXT_SWAPFRAME:
+        case EXT_SWAPFRAME:
             return [current fdcCallbackSwapFrame:data];
-        case ExternalFunction_EXT_PUSH_SAMPLE:
+        case EXT_PUSH_SAMPLE:
             [current fdcCallbackPushSample:(uintptr_t)data];
             break;
-        case ExternalFunction_EXT_GET_PBUSLEN:
+        case EXT_GET_PBUSLEN:
             return (void*)[current fdcCallbackGetPbusLength];
-        case ExternalFunction_EXT_GETP_PBUSDATA:
+        case EXT_GETP_PBUSDATA:
             return [current fdcCallbackGetPbus];
-        case ExternalFunction_EXT_FRAMETRIGGER_MT:
+        case EXT_KPRINT:
+            [current fdcCallbackKPrint:data];
+            break;
+        case EXT_FRAMETRIGGER_MT:
             [current fdcCallbackFrameTrigger];
             break;
-        case ExternalFunction_EXT_READ2048:
+        case EXT_READ2048:
             [current fdcCallbackRead2048:data];
             break;
-        case ExternalFunction_EXT_GET_DISC_SIZE:
+        case EXT_GET_DISC_SIZE:
             return (void *)[current fdcCallbackGetDiscSize];
-        case ExternalFunction_EXT_ON_SECTOR:
+        case EXT_ON_SECTOR:
             [current fdcCallbackOnSector:(intptr_t)data];
             break;
-        case ExternalFunction_EXT_ARM_SYNC:
+        case EXT_ARM_SYNC:
             [current fdcCallbackArmSync:(intptr_t)data];
             break;
 
@@ -210,14 +214,12 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (id)init
 {
-	self = [super init];
-    if(self != nil)
+    if((self = [super init]))
     {
-
+        current = self;
     }
-	current = self;
     
-	return self;
+    return self;
 }
 
 #pragma mark Exectuion
@@ -373,7 +375,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (double)audioSampleRate
 {
-    return sampleRate ? sampleRate : 44100;
+    return 44100;
 }
 
 - (NSUInteger)soundBufferSize
@@ -412,90 +414,90 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 #pragma mark - FreeDoInterface
 
--(void*) _freedoActionWithInterfaceFunction:(InterfaceFunction) interfaceFunction datum:(void*) datum
+-(void*) _freedoActionWithInterfaceFunction:(int) procedure datum:(void*) datum
 {
-    return _freedo_Interface(interfaceFunction, datum);
+    return _freedo_Interface(procedure, datum);
 }
 
 -(int) fdcGetCoreVersion
 {
-    return (uintptr_t)[self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_FREEDOCORE_VERSION datum:(void*)0];
+    return (uintptr_t)[self _freedoActionWithInterfaceFunction:FDP_FREEDOCORE_VERSION datum:(void*)0];
 }
 
 -(int) fdcGetSaveSize
 {
-    return (uintptr_t)[self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_GET_SAVE_SIZE datum:(void*)0];
+    return (uintptr_t)[self _freedoActionWithInterfaceFunction:FDP_GET_SAVE_SIZE datum:(void*)0];
 }
 
 -(void*) fdcGetPointerNVRAM
 {
-    return [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_GETP_NVRAM datum:(void*)0];
+    return [self _freedoActionWithInterfaceFunction:FDP_GETP_NVRAM datum:(void*)0];
 }
 
 -(void*) fdcGetPointerRAM
 {
-    return [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_GETP_RAMS datum:(void*)0];
+    return [self _freedoActionWithInterfaceFunction:FDP_GETP_RAMS datum:(void*)0];
 }
 
 -(void*) fdcGetPointerROM
 {
-    return [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_GETP_ROMS datum:(void*)0];
+    return [self _freedoActionWithInterfaceFunction:FDP_GETP_ROMS datum:(void*)0];
 }
 
 -(void*) fdcGetPointerProfile
 {
-    return [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_GETP_PROFILE datum:(void*)0];
+    return [self _freedoActionWithInterfaceFunction:FDP_GETP_PROFILE datum:(void*)0];
 }
 
 -(int) fdcInitialize
 {
-    return (intptr_t)[self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_INIT datum:(void*)*fdcCallback];
+    return (intptr_t)[self _freedoActionWithInterfaceFunction:FDP_INIT datum:(void*)*fdcCallback];
 }
 
 -(void) fdcDestroy
 {
-    [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_DESTROY datum:(void*)0];
+    [self _freedoActionWithInterfaceFunction:FDP_DESTROY datum:(void*)0];
 }
 
 -(void) fdcDoExecuteFrame:(void*)vdlFrame
 {
-    [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_DO_EXECFRAME datum:vdlFrame];
+    [self _freedoActionWithInterfaceFunction:FDP_DO_EXECFRAME datum:vdlFrame];
 }
 
 -(void) fdcDoExecuteFrameMultitask:(void*)vdlFrame
 {
-    [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_DO_EXECFRAME_MT datum:vdlFrame];
+    [self _freedoActionWithInterfaceFunction:FDP_DO_EXECFRAME_MT datum:vdlFrame];
 }
 
 -(void) fdcDoFrameMultitask:(void*)vdlFrame
 {
-    [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_DO_FRAME_MT datum:vdlFrame];
+    [self _freedoActionWithInterfaceFunction:FDP_DO_FRAME_MT datum:vdlFrame];
 }
 
 -(BOOL) fdcDoLoad:(void*)buffer
 {
-    return [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_DO_LOAD datum:buffer]!=0;
+    return [self _freedoActionWithInterfaceFunction:FDP_DO_LOAD datum:buffer]!=0;
 }
 
 -(void) fdcDoSave:(void*)buffer
 {
-    [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_DO_SAVE datum:buffer];
+    [self _freedoActionWithInterfaceFunction:FDP_DO_SAVE datum:buffer];
 }
 
 -(void*) fdcSetArmClock:(int)clock
 {
     //untested!
-    return [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_SET_ARMCLOCK datum:(void*) clock];
+    return [self _freedoActionWithInterfaceFunction:FDP_SET_ARMCLOCK datum:(void*) clock];
 }
 
 -(void*) fdcSetFixMode:(int)fixMode
 {
-    return [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_SET_FIX_MODE datum:(void*) fixMode];
+    return [self _freedoActionWithInterfaceFunction:FDP_SET_FIX_MODE datum:(void*) fixMode];
 }
 
 -(void*) fdcSetTextureQuality:(int)textureQuality
 {
-    return [self _freedoActionWithInterfaceFunction:InterfaceFunction_FDP_SET_TEXQUALITY datum:(void*) textureQuality];
+    return [self _freedoActionWithInterfaceFunction:FDP_SET_TEXQUALITY datum:(void*) textureQuality];
 }
 
 - (void)fdcCallbackKPrint:(void *)pv
@@ -515,15 +517,15 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 - (void)fdcCallbackReadROM:(void *)pv
 {
     //NSLog(@"fdcCallbackReadROM");
-    memcpy(pv, biosRom1Copy, PhysicalParameters_ROM1_SIZE);
-    void *biosRom2Dest = (void*)((intptr_t)pv+PhysicalParameters_ROM2_SIZE);
-    memcpy(biosRom2Dest, biosRom2Copy, PhysicalParameters_ROM2_SIZE);
+    memcpy(pv, biosRom1Copy, ROM1_SIZE);
+    void *biosRom2Dest = (void*)((intptr_t)pv+ROM2_SIZE);
+    memcpy(biosRom2Dest, biosRom2Copy, ROM2_SIZE);
 }
 
 - (void)fdcCallbackReadNVRAM:(void *)buffer
 {
     //NSLog(@"fdcCallbackReadNVRAM");
-    memcpy(buffer, nvramCopy, PhysicalParameters_NVRAM_SIZE);
+    memcpy(buffer, nvramCopy, NVRAM_SIZE);
 }
 
 - (void)fdcCallbackWriteNVRAM:(void *)pv
@@ -569,13 +571,13 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (intptr_t)fdcCallbackGetPbusLength
 {
-    return PhysicalParameters_PBUS_DATA_MAX_SIZE;
+    return PBUS_DATA_MAX_SIZE;
 }
 
 - (void *)fdcCallbackGetPbus
 {    
     int i;
-    for(i = 0; i < PhysicalParameters_PBUS_DATA_MAX_SIZE; i++)
+    for(i = 0; i < PBUS_DATA_MAX_SIZE; i++)
     {
         if (i > 0)
             printf(":");
@@ -623,7 +625,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (void)initPBusAndNVRAM
 {
-    memset((void*)pbus,0xff,PhysicalParameters_PBUS_DATA_MAX_SIZE);
+    memset((void*)pbus,0xff,PBUS_DATA_MAX_SIZE);
     nvramCopy = malloc(65536/2);
     memset(nvramCopy,0,65536/2);
     memcpy(nvramCopy,nvramhead,sizeof(nvramhead));
@@ -636,7 +638,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
     NSString *rom1Path = [[self biosDirectoryPath] stringByAppendingPathComponent:@"panafz10.bin"];
     NSData *data = [NSData dataWithContentsOfFile:rom1Path];
     NSUInteger len = [data length];
-    assert(len==PhysicalParameters_ROM1_SIZE);
+    assert(len==ROM1_SIZE);
     biosRom1Copy = (Byte*)malloc(len);
     memcpy(biosRom1Copy, [data bytes], len);
 
@@ -646,7 +648,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
     if(data)
     {
         len = [data length];
-        assert(len==PhysicalParameters_ROM2_SIZE);
+        assert(len==ROM2_SIZE);
         biosRom2Copy = (Byte*)malloc(len);
         memcpy(biosRom2Copy, [data bytes], len);
     }
