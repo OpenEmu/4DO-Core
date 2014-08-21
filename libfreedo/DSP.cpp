@@ -1176,7 +1176,7 @@ unsigned int _dsp_ARMread2sema4(void)
 		}else if ((operand.nrof.TYPE&6)==6)
 		{
 				//case 6: and case 7:  immediate format
-				OperandPool[Operands]=operand.iof.IMMEDIATE<<(~((operand.iof.JUSTIFY)+1)&3);
+				OperandPool[Operands]=operand.iof.IMMEDIATE<<(operand.iof.JUSTIFY&3);
 				flags.WRITEBACK=OperandPool[Operands++];
 
 		}else if(!(operand.nrof.TYPE&4))  // case 0..3
@@ -1280,7 +1280,7 @@ int __fastcall OperandLoaderNWB(void)
 		}else if ((operand.nrof.TYPE&6)==6)
 		{
 				//case 6: and case 7:  immediate format
-				Operand=operand.iof.IMMEDIATE<<(~((operand.iof.JUSTIFY)+1)&3); 
+				Operand=operand.iof.IMMEDIATE<<(operand.iof.JUSTIFY&3);
 
 		}else if(operand.nrof.TYPE==5)
 		{ //if(operand.r2of.NUMREGS) ignore... It's right?
