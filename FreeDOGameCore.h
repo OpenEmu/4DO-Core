@@ -30,8 +30,8 @@
 
 @class OERingBuffer;
 
-#define SCREEN_WIDTH  640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH  320
+#define SCREEN_HEIGHT 240
 
 
 struct VolumeHeader             // 132 bytes

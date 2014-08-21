@@ -28,7 +28,7 @@ Felix Lazarev
 #include "vdlp.h"
 #include "DSP.h"
 #include "Clio.h"
-//#include "frame.h"
+#include "frame.h"
 #include "Madam.h"
 #include "SPORT.h"
 #include "XBUS.h"
@@ -73,7 +73,7 @@ int _3do_Init()
 
 	_clio_Init(0x40); // 0x40 for start from  3D0-CD, 0x01/0x02 from PhotoCD ?? (NO use 0x40/0x02 for BIOS test)
 	_dsp_Init();
-	//_frame_Init();
+	_frame_Init();
 	_diag_Init(-1);  // Select test, use -1 -- if d'nt need tests
 /*
 00	DIAGNOSTICS TEST	(run of test: 1F, 24, 25, 32, 50, 51, 60, 61, 62, 68, 71, 75, 80, 81, 90)
@@ -252,7 +252,7 @@ unsigned int _3do_DiscSize()
 }
 
 int __tex__scaler = 0;
-//int HightResMode=0;
+int HightResMode=0;
 int fixmode=0;
 int speedfixes=0;
 int sf=0;

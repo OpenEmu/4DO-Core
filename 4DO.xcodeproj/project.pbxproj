@@ -58,10 +58,11 @@
 		575ACC341582D50400EAC45A /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF91582C37400EAC45A /* time.c */; };
 		575ACC391582D51900EAC45A /* liblibcue.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC271582D4F000EAC45A /* liblibcue.a */; };
 		575ACC3A1582D51900EAC45A /* liblibfreedo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC131582D4BE00EAC45A /* liblibfreedo.a */; };
-		57C189551581E581007AC24B /* freedoconfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57C189541581E581007AC24B /* freedoconfig.cpp */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		942597C515146FF40074E3A3 /* OpenEmuBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 942597C415146FF40074E3A3 /* OpenEmuBase.framework */; };
+		94551A1019A570170080929A /* frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94551A0E19A570170080929A /* frame.cpp */; };
+		94551A1119A570170080929A /* frame.h in Headers */ = {isa = PBXBuildFile; fileRef = 94551A0F19A570170080929A /* frame.h */; };
 		94D9257314CA9879008F697D /* FreeDOGameCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */; };
 /* End PBXBuildFile section */
 
@@ -166,13 +167,14 @@
 		578D12401582B03F003F64E5 /* vdlp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vdlp.h; sourceTree = "<group>"; };
 		578D12411582B03F003F64E5 /* XBUS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBUS.cpp; sourceTree = "<group>"; };
 		578D12421582B03F003F64E5 /* XBUS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBUS.h; sourceTree = "<group>"; };
-		57C189541581E581007AC24B /* freedoconfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = freedoconfig.cpp; sourceTree = "<group>"; };
 		826FE0F31014D8930023A8E9 /* FreeDOGameCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreeDOGameCore.h; sourceTree = "<group>"; };
 		826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FreeDOGameCore.mm; sourceTree = "<group>"; };
 		82B91C841015267F007BD6DB /* libco.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libco.a; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* 4DO.oecoreplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = 4DO.oecoreplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		942597C415146FF40074E3A3 /* OpenEmuBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenEmuBase.framework; path = ../OpenEmu/build/Release/OpenEmuBase.framework; sourceTree = "<group>"; };
+		94551A0E19A570170080929A /* frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = frame.cpp; sourceTree = "<group>"; };
+		94551A0F19A570170080929A /* frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = frame.h; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -241,7 +243,6 @@
 				578D12261582B03E003F64E5 /* libfreedo */,
 				826FE0F31014D8930023A8E9 /* FreeDOGameCore.h */,
 				826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */,
-				57C189541581E581007AC24B /* freedoconfig.cpp */,
 				37E8246D172B7BEB00E58D77 /* OE3DOSystemResponderClient.h */,
 			);
 			name = Classes;
@@ -314,6 +315,8 @@
 				578D122F1582B03E003F64E5 /* DiagPort.h */,
 				578D12301582B03E003F64E5 /* DSP.cpp */,
 				578D12311582B03E003F64E5 /* DSP.h */,
+				94551A0E19A570170080929A /* frame.cpp */,
+				94551A0F19A570170080929A /* frame.h */,
 				578D12321582B03E003F64E5 /* freedoconfig.h */,
 				578D12331582B03F003F64E5 /* freedocore.h */,
 				578D12341582B03F003F64E5 /* Iso.cpp */,
@@ -340,6 +343,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94551A1119A570170080929A /* frame.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,6 +499,7 @@
 				575ACC201582D4E200EAC45A /* SPORT.cpp in Sources */,
 				575ACC211582D4E200EAC45A /* vdlp.cpp in Sources */,
 				575ACC221582D4E200EAC45A /* XBUS.cpp in Sources */,
+				94551A1019A570170080929A /* frame.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,7 +523,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				94D9257314CA9879008F697D /* FreeDOGameCore.mm in Sources */,
-				57C189551581E581007AC24B /* freedoconfig.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

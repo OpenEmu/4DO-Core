@@ -58,148 +58,149 @@ int __fastcall OperandLoaderNWB(void);
 //////////////////////////////////////////////////////////////////////
 #pragma pack(push,1)
 
-	struct CIFTAG{
-		 unsigned int	BCH_ADDR	:10;
-		 unsigned int	FLAG_MASK	:2;
-		 unsigned int	FLGSEL		:1;
-		 unsigned int	MODE		:2;
-		 unsigned int	PAD			:1;
-	};
-	struct BRNTAG{
-		unsigned int BCH_ADDR:10;
-		unsigned int FLAGM0	:1;
-		unsigned int FLAGM1	:1;
-		unsigned int FLAGSEL:1;
-		unsigned int MODE0	:1;
-		unsigned int MODE1  :1;
-		unsigned int AC		:1;
-	};
-	struct BRNBITS {
-		unsigned int BCH_ADDR:10;
-		unsigned int bits	:5;
-		unsigned int AC		:1;
-	};
+struct CIFTAG{
+	unsigned int	BCH_ADDR	:10;
+	unsigned int	FLAG_MASK	:2;
+	unsigned int	FLGSEL		:1;
+	unsigned int	MODE		:2;
+	unsigned int	PAD			:1;
+};
+struct BRNTAG{
+	unsigned int	BCH_ADDR:10;
+	unsigned int	FLAGM0	:1;
+	unsigned int	FLAGM1	:1;
+	unsigned int	FLAGSEL:1;
+	unsigned int	MODE0	:1;
+	unsigned int	MODE1  :1;
+	unsigned int	AC		:1;
+};
+struct BRNBITS {
+	unsigned int	BCH_ADDR:10;
+	unsigned int	bits	:5;
+	unsigned int	AC		:1;
+};
 
-	struct AIFTAG{
-		unsigned int	BS			:4;
-		unsigned int	ALU			:4;
-		unsigned int	MUXB		:2;
-		unsigned int	MUXA		:2;
-		  signed int	M2SEL		:1;
-		unsigned int	NUMOPS		:2;
-		  signed int	PAD			:1;
-	};
-	struct IOFTAG{
-		  signed int	IMMEDIATE	:13;
-		  signed int	JUSTIFY		:1;
-		unsigned int	TYPE		:2;
-	};
-	struct NROFTAG{
-		unsigned int	OP_ADDR		:10;
-		  signed int	DI			:1;
-		unsigned int	WB1			:1;
-		unsigned int	PAD			:1;
-		unsigned int	TYPE		:3;
-	};
-	struct R2OFTAG{
-		unsigned int	R1			:4;
-		  signed int	R1_DI		:1;
-		unsigned int	R2			:4;
-		  signed int	R2_DI		:1;
-		unsigned int	NUMREGS		:1;
-		unsigned int	WB1			:1;
-		unsigned int	WB2			:1;
-		unsigned int	TYPE		:3;
-	};
-	struct R3OFTAG{
-		unsigned int	R1			:4;
-		  signed int	R1_DI		:1;
-		unsigned int	R2			:4;
-		  signed int	R2_DI		:1;
-		unsigned int	R3			:4;
-		  signed int	R3_DI		:1;
-		unsigned int	TYPE		:1;
-	};
+struct AIFTAG{
+	unsigned int	BS			:4;
+	unsigned int	ALU			:4;
+	unsigned int	MUXB		:2;
+	unsigned int	MUXA		:2;
+	signed int		M2SEL		:1;
+	unsigned int	NUMOPS		:2;
+	signed int		PAD			:1;
+};
+struct IOFTAG{
+	signed int		IMMEDIATE	:13;
+	signed int		JUSTIFY		:1;
+	unsigned int	TYPE		:2;
+};
+struct NROFTAG{
+	unsigned int	OP_ADDR		:10;
+	signed int		DI			:1;
+	unsigned int	WB1			:1;
+	unsigned int	PAD			:1;
+	unsigned int	TYPE		:3;
+};
+struct R2OFTAG{
+	unsigned int	R1			:4;
+	signed int		R1_DI		:1;
+	unsigned int	R2			:4;
+	signed int		R2_DI		:1;
+	unsigned int	NUMREGS		:1;
+	unsigned int	WB1			:1;
+	unsigned int	WB2			:1;
+	unsigned int	TYPE		:3;
+};
+struct R3OFTAG{
+	unsigned int	R1			:4;
+	signed int		R1_DI		:1;
+	unsigned int	R2			:4;
+	signed int		R2_DI		:1;
+	unsigned int	R3			:4;
+	signed int		R3_DI		:1;
+	unsigned int	TYPE		:1;
+};
 
-	union ITAG{
-		unsigned int raw;
-		AIFTAG	aif;
-		CIFTAG	cif;
-		IOFTAG	iof;
-		NROFTAG	nrof;
-		R2OFTAG	r2of;
-		R3OFTAG	r3of;
-		BRNTAG	branch;
-		BRNBITS br;
-	};
+union ITAG{
+	unsigned int raw;
+	AIFTAG	aif;
+	CIFTAG	cif;
+	IOFTAG	iof;
+	NROFTAG	nrof;
+	R2OFTAG	r2of;
+	R3OFTAG	r3of;
+	BRNTAG	branch;
+	BRNBITS br;
+};
 
-	struct RQFTAG{
+struct RQFTAG{
 
-		unsigned int BS:1;
-		unsigned int ALU2:1;
-		unsigned int ALU1:1;
-		unsigned int MULT2:1;
-		unsigned int MULT1:1;
+	unsigned int BS:1;
+	unsigned int ALU2:1;
+	unsigned int ALU1:1;
+	unsigned int MULT2:1;
+	unsigned int MULT1:1;
 
-	};
-	union _requnion
-        {
-		unsigned char raw;
-		RQFTAG	rq;
-	};
+};
 
-	struct __INSTTRAS
-	{
-		_requnion req;
-		char BS;		// 4+1 bits
-	}; // only for ALU command
+union _requnion
+{
+	unsigned char raw;
+	RQFTAG	rq;
+};
 
-	struct REGSTAG{
-		unsigned int PC;//0x0ee
-		unsigned short NOISE;//0x0ea
-		unsigned short AudioOutStatus;//audlock,lftfull,rgtfull -- 0x0eb//0x3eb
-		unsigned short Sema4Status;//0x0ec//0x3ec
-		unsigned short Sema4Data;//0x0ed//0x3ed
-		short DSPPCNT;//0x0ef
-		short DSPPRLD;//0x3ef
-		short AUDCNT;
-		unsigned short INT;//0x3ee
-	};
-	struct INTAG{
+struct __INSTTRAS
+{
+	_requnion req;
+	char BS;		// 4+1 bits
+}; // only for ALU command
 
-		signed short MULT1;
-		signed short MULT2;
+struct REGSTAG{
+	unsigned int PC;//0x0ee
+	unsigned short NOISE;//0x0ea
+	unsigned short AudioOutStatus;//audlock,lftfull,rgtfull -- 0x0eb//0x3eb
+	unsigned short Sema4Status;//0x0ec//0x3ec
+	unsigned short Sema4Data;//0x0ed//0x3ed
+	short DSPPCNT;//0x0ef
+	short DSPPRLD;//0x3ef
+	short AUDCNT;
+	unsigned short INT;//0x3ee
+};
+struct INTAG{
 
-		signed short ALU1;
-		signed short ALU2;
+	signed short MULT1;
+	signed short MULT2;
 
-		int BS;
+	signed short ALU1;
+	signed short ALU2;
 
-		unsigned short RMAP;
-		unsigned short nOP_MASK;
+	int BS;
 
-		unsigned short WRITEBACK;
+	unsigned short RMAP;
+	unsigned short nOP_MASK;
 
-		_requnion	req;
+	unsigned short WRITEBACK;
 
-		bool Running;
-		bool GenFIQ;
+	_requnion	req;
 
-	};
+	bool Running;
+	bool GenFIQ;
+
+};
 
 struct DSPDatum
 {
-        unsigned int RBASEx4;
-        __INSTTRAS INSTTRAS[0x8000];
-        unsigned short REGCONV[8][16];
-        bool BRCONDTAB[32][32];
-        unsigned short NMem[2048];
-        unsigned short IMem[1024];
-        int REGi;
-        REGSTAG dregs;
-        INTAG flags;
-        unsigned int g_seed;
-        bool CPUSupply[16];
+	unsigned int RBASEx4;
+	__INSTTRAS INSTTRAS[0x8000];
+	unsigned short REGCONV[8][16];
+	bool BRCONDTAB[32][32];
+	unsigned short NMem[2048];
+	unsigned short IMem[1024];
+	int REGi;
+	REGSTAG dregs;
+	INTAG flags;
+	unsigned int g_seed;
+	bool CPUSupply[16];
 };
 
 #pragma pack(pop)
@@ -210,15 +211,15 @@ static DSPDatum dsp;
 
 unsigned int _dsp_SaveSize()
 {
-        return sizeof(DSPDatum);
+	return sizeof(DSPDatum);
 }
 void _dsp_Save(void *buff)
 {
-        memcpy(buff,&dsp,sizeof(DSPDatum));
+	memcpy(buff,&dsp,sizeof(DSPDatum));
 }
 void _dsp_Load(void *buff)
 {
-        memcpy(&dsp,buff,sizeof(DSPDatum));
+	memcpy(&dsp,buff,sizeof(DSPDatum));
 }
 
 #define RBASEx4 dsp.RBASEx4
@@ -233,31 +234,27 @@ void _dsp_Load(void *buff)
 #define g_seed dsp.g_seed
 #define CPUSupply dsp.CPUSupply
 
-
-
-
 int fastrand()
 {
-    g_seed=69069*g_seed+1;
+	g_seed=69069*g_seed+1;
 	return g_seed & 0xFFFF;
 }
-
 
 void _dsp_Init()
 {
 
-  int a,c;
-  ITAG inst;
-  unsigned int i;
+	int a,c;
+	ITAG inst;
+	unsigned int i;
 
-  g_seed=0xa5a5a5a5;
-  //FRAMES=0;
-  for(a=0;a<16;a++)
-	  for(c=0;c<8;c++)
-	  {
+	g_seed=0xa5a5a5a5;
+	//FRAMES=0;
+	for(a=0;a<16;a++)
+	for(c=0;c<8;c++)
+	{
 		flags.RMAP=c;
 		REGCONV[c][a]=RegBase(a);
-	  }
+	}
 
 	for(inst.raw=0;inst.raw<0x8000;inst.raw++)
 	{
@@ -318,60 +315,59 @@ void _dsp_Init()
 //		int Flags.Over;
 		int fExact;
 
-	union {
-		struct {
-			char Zero;
-			char Nega;
-			char Carry;//not borrow
-			char Over;
-		};
-		unsigned int raw;
-	} Flags;
+		union {
+			struct {
+				char Zero;
+				char Nega;
+				char Carry;//not borrow
+				char Over;
+			};
+			unsigned int raw;
+		} Flags;
 
-	for(inst.raw=0xA000; inst.raw<=0xFFFF; inst.raw+=1024)
-	 for(Flags.Zero=0;Flags.Zero<2;Flags.Zero++)
-	  for(Flags.Nega=0;Flags.Nega<2;Flags.Nega++)
-	   for(Flags.Carry=0;Flags.Carry<2;Flags.Carry++)
-		for(Flags.Over=0;Flags.Over<2;Flags.Over++)
-		 for(fExact=0;fExact<2;fExact++)
-			{
+		for(inst.raw=0xA000; inst.raw<=0xFFFF; inst.raw+=1024)
+		 for(Flags.Zero=0;Flags.Zero<2;Flags.Zero++)
+		  for(Flags.Nega=0;Flags.Nega<2;Flags.Nega++)
+		   for(Flags.Carry=0;Flags.Carry<2;Flags.Carry++)
+			for(Flags.Over=0;Flags.Over<2;Flags.Over++)
+			 for(fExact=0;fExact<2;fExact++)
+				{
 
-				MD0=!inst.branch.MODE1 && !inst.branch.MODE0;
-				MD1=!inst.branch.MODE1 && inst.branch.MODE0;
-				MD2=inst.branch.MODE1 && !inst.branch.MODE0;
-				MD3=inst.branch.MODE1 && inst.branch.MODE0;
+					MD0=!inst.branch.MODE1 && !inst.branch.MODE0;
+					MD1=!inst.branch.MODE1 && inst.branch.MODE0;
+					MD2=inst.branch.MODE1 && !inst.branch.MODE0;
+					MD3=inst.branch.MODE1 && inst.branch.MODE0;
 
-				STAT0=(inst.branch.FLAGSEL && Flags.Carry) || (!inst.branch.FLAGSEL && Flags.Nega);
-				STAT1=(inst.branch.FLAGSEL && Flags.Zero) || (!inst.branch.FLAGSEL && Flags.Over);
-				NSTAT0=STAT0!=MD2;
-				NSTAT1=STAT1!=MD2;
+					STAT0=(inst.branch.FLAGSEL && Flags.Carry) || (!inst.branch.FLAGSEL && Flags.Nega);
+					STAT1=(inst.branch.FLAGSEL && Flags.Zero) || (!inst.branch.FLAGSEL && Flags.Over);
+					NSTAT0=STAT0!=MD2;
+					NSTAT1=STAT1!=MD2;
 
-				TDCARE1=!inst.branch.FLAGM1 || (inst.branch.FLAGM1 && NSTAT0);
-				TDCARE0=!inst.branch.FLAGM0 || (inst.branch.FLAGM0 && NSTAT1);
+					TDCARE1=!inst.branch.FLAGM1 || (inst.branch.FLAGM1 && NSTAT0);
+					TDCARE0=!inst.branch.FLAGM0 || (inst.branch.FLAGM0 && NSTAT1);
 
-				RDCARE=!inst.branch.FLAGM1 && !inst.branch.FLAGM0;
+					RDCARE=!inst.branch.FLAGM1 && !inst.branch.FLAGM0;
 
-				MD12S=TDCARE1 && TDCARE0 && (inst.branch.MODE1!=inst.branch.MODE0) && !RDCARE;
+					MD12S=TDCARE1 && TDCARE0 && (inst.branch.MODE1!=inst.branch.MODE0) && !RDCARE;
 
-				SUPER0= MD1 && !inst.branch.FLAGSEL && RDCARE;
-				SUPER1= MD1 && inst.branch.FLAGSEL && RDCARE;
+					SUPER0= MD1 && !inst.branch.FLAGSEL && RDCARE;
+					SUPER1= MD1 && inst.branch.FLAGSEL && RDCARE;
 
-				ALLZERO=SUPER0 && Flags.Zero && fExact;
-				NALLZERO=SUPER1 && !(Flags.Zero && fExact);
+					ALLZERO=SUPER0 && Flags.Zero && fExact;
+					NALLZERO=SUPER1 && !(Flags.Zero && fExact);
 
-				SDS=ALLZERO || NALLZERO;
+					SDS=ALLZERO || NALLZERO;
 
-				NVTest=( ((Flags.Nega!=Flags.Over) || (Flags.Zero && inst.branch.FLAGM0)) != inst.branch.FLAGM1) && !inst.branch.FLAGSEL;
-				TMPCS=Flags.Carry && ! Flags.Zero;
-				CZTest=(TMPCS != inst.branch.FLAGM0) && inst.branch.FLAGSEL && !inst.branch.FLAGM1;
-				XactTest=(fExact != inst.branch.FLAGM0) && inst.branch.FLAGSEL && inst.branch.FLAGM1;
+					NVTest=( ((Flags.Nega!=Flags.Over) || (Flags.Zero && inst.branch.FLAGM0)) != inst.branch.FLAGM1) && !inst.branch.FLAGSEL;
+					TMPCS=Flags.Carry && ! Flags.Zero;
+					CZTest=(TMPCS != inst.branch.FLAGM0) && inst.branch.FLAGSEL && !inst.branch.FLAGM1;
+					XactTest=(fExact != inst.branch.FLAGM0) && inst.branch.FLAGSEL && inst.branch.FLAGM1;
 
-				MD3S=(NVTest || CZTest || XactTest)&&MD3;
+					MD3S=(NVTest || CZTest || XactTest)&&MD3;
 
-				BRCONDTAB[inst.br.bits][fExact+((Flags.raw*0x10080402)>>24)] = (MD12S || MD3S || SDS)? true : false;
-			 }
+					BRCONDTAB[inst.br.bits][fExact+((Flags.raw*0x10080402)>>24)] = (MD12S || MD3S || SDS)? true : false;
+				 }
 	}
-
 
 	flags.Running=0;
 	flags.GenFIQ=false;
@@ -398,34 +394,34 @@ void _dsp_Reset()
 extern _ext_Interface  io_interface;
 void _Arithmetic_Debug(uint16 nrc, uint16 opmask)
 {
- bool MULT1_RQST_L,MULT2_RQST_L,ALU1_RQST_L,ALU2_RQST_L,BS_RQST_L;
- int NUMBER_OPERANDS=0, cnt=0;
+	bool MULT1_RQST_L,MULT2_RQST_L,ALU1_RQST_L,ALU2_RQST_L,BS_RQST_L;
+	int NUMBER_OPERANDS=0, cnt=0;
 
-    if( ((nrc&0x300)==0x300 || (nrc&0xC00)==0xC00) && !(opmask&0x10) )
-        {MULT1_RQST_L=true;cnt++;}
-    else MULT1_RQST_L=false;
+	if( ((nrc&0x300)==0x300 || (nrc&0xC00)==0xC00) && !(opmask&0x10) )
+		{MULT1_RQST_L=true;cnt++;}
+	else MULT1_RQST_L=false;
 
-    if( ((nrc&0x300)==0x300 || (nrc&0xC00)==0xC00) && !(opmask&0x8) && (nrc&0x1000) )
-        {MULT2_RQST_L=true;cnt++;}
-    else MULT2_RQST_L=false;
+	if( ((nrc&0x300)==0x300 || (nrc&0xC00)==0xC00) && !(opmask&0x8) && (nrc&0x1000) )
+		{MULT2_RQST_L=true;cnt++;}
+	else MULT2_RQST_L=false;
 
-    if(  ((nrc&0x300)==0x100 || (nrc&0xC00)==0x400) && !(opmask&0x4)  )
-        {ALU1_RQST_L=true;cnt++;}
-    else ALU1_RQST_L=false;
+	if(  ((nrc&0x300)==0x100 || (nrc&0xC00)==0x400) && !(opmask&0x4)  )
+		{ALU1_RQST_L=true;cnt++;}
+	else ALU1_RQST_L=false;
 
-    if(  ((nrc&0x300)==0x200 || (nrc&0xC00)==0x800) && !(opmask&0x2)  )
-        {ALU2_RQST_L=true;cnt++;}
-    else ALU2_RQST_L=false;
+	if(  ((nrc&0x300)==0x200 || (nrc&0xC00)==0x800) && !(opmask&0x2)  )
+		{ALU2_RQST_L=true;cnt++;}
+	else ALU2_RQST_L=false;
 
-    if( (nrc&0xf)==0x8 && !(opmask&0x1) )
-        {BS_RQST_L=true;cnt++;}
-    else BS_RQST_L=false;
+	if( (nrc&0xf)==0x8 && !(opmask&0x1) )
+		{BS_RQST_L=true;cnt++;}
+	else BS_RQST_L=false;
 
-    NUMBER_OPERANDS=(nrc>>13)&3;
-    if(!NUMBER_OPERANDS && (ALU1_RQST_L || ALU2_RQST_L) )NUMBER_OPERANDS=4;
+	NUMBER_OPERANDS=(nrc>>13)&3;
+	if(!NUMBER_OPERANDS && (ALU1_RQST_L || ALU2_RQST_L) )NUMBER_OPERANDS=4;
 
-    //what if RQ is more than NUM_OPS????
-    if(NUMBER_OPERANDS<cnt)io_interface(EXT_DEBUG_PRINT,(void*)">>>DSP NUM_OPS_CONFLICT!!!\n");
+	//what if RQ is more than NUM_OPS????
+	if(NUMBER_OPERANDS<cnt)io_interface(EXT_DEBUG_PRINT,(void*)">>>DSP NUM_OPS_CONFLICT!!!\n");
 
 }
 
@@ -549,7 +545,9 @@ unsigned int _dsp_Loop()
 			{
 				//ALU instruction
 
+				#if _DEBUG
 				_Arithmetic_Debug(inst.raw, ~flags.nOP_MASK);
+				#endif
 
 				flags.req.raw=INSTTRAS[inst.raw].req.raw;
 				flags.BS     =INSTTRAS[inst.raw].BS;
@@ -961,7 +959,6 @@ unsigned short __fastcall ireadh(unsigned int addr) //DSP IREAD (includes EI, I)
 
 }
 
-
 void __fastcall iwriteh(unsigned int addr, unsigned short val) //DSP IWRITE (includes EO,I)
 {
 	//unsigned short imem;
@@ -1024,8 +1021,6 @@ void __fastcall iwriteh(unsigned int addr, unsigned short val) //DSP IWRITE (inc
 		return;
 	}
 }
-
-
 
 void __fastcall _dsp_SetRunning(bool val)
 {
@@ -1181,7 +1176,7 @@ unsigned int _dsp_ARMread2sema4(void)
 		}else if ((operand.nrof.TYPE&6)==6)
 		{
 				//case 6: and case 7:  immediate format
-				OperandPool[Operands]=operand.iof.IMMEDIATE<<(operand.iof.JUSTIFY&3);
+				OperandPool[Operands]=operand.iof.IMMEDIATE<<(~((operand.iof.JUSTIFY)+1)&3);
 				flags.WRITEBACK=OperandPool[Operands++];
 
 		}else if(!(operand.nrof.TYPE&4))  // case 0..3
@@ -1260,8 +1255,6 @@ unsigned int _dsp_ARMread2sema4(void)
 		flags.WRITEBACK=GWRITEBACK;
 }
 
-
-
 int __fastcall OperandLoaderNWB(void)
 {
 	int Operand;
@@ -1287,7 +1280,7 @@ int __fastcall OperandLoaderNWB(void)
 		}else if ((operand.nrof.TYPE&6)==6)
 		{
 				//case 6: and case 7:  immediate format
-				Operand=operand.iof.IMMEDIATE<<(operand.iof.JUSTIFY&3);
+				Operand=operand.iof.IMMEDIATE<<(~((operand.iof.JUSTIFY)+1)&3); 
 
 		}else if(operand.nrof.TYPE==5)
 		{ //if(operand.r2of.NUMREGS) ignore... It's right?

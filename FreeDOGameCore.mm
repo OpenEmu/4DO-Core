@@ -31,6 +31,7 @@
 #import <OpenGL/gl.h>
 
 #include "freedocore.h"
+#include "frame.h"
 #include "libcue.h"
 #include "cd.h"
 
@@ -73,12 +74,9 @@ FreeDOGameCore *current;
     
     int fver1,fver2;
 
-    uintptr_t sampleBuffer[TEMP_BUFFER_SIZE];
+    //uintptr_t sampleBuffer[TEMP_BUFFER_SIZE];
+    int32_t sampleBuffer[TEMP_BUFFER_SIZE];
     uint sampleCurrent;
-
-    unsigned char FIXED_CLUTR[32];
-    unsigned char FIXED_CLUTG[32];
-    unsigned char FIXED_CLUTB[32];
 }
 
 static void* fdcCallback(int procedure, void* data)
@@ -213,12 +211,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 	self = [super init];
     if(self != nil)
     {
-        for(int j = 0; j < 32; j++)
-        {
-            FIXED_CLUTR[j] = (unsigned char)(((j & 0x1f) << 3) | ((j >> 2) & 7));
-            FIXED_CLUTG[j] = FIXED_CLUTR[j];
-            FIXED_CLUTB[j] = FIXED_CLUTR[j];
-        }
+
     }
 	current = self;
     
@@ -258,7 +251,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
     currentSector = 0;
     sampleCurrent = 0;
-    memset(sampleBuffer, 0, sizeof(uintptr_t)*TEMP_BUFFER_SIZE);
+    memset(sampleBuffer, 0, sizeof(int32_t)*TEMP_BUFFER_SIZE);
 
     NSString* cue = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&errorCue];
 
@@ -302,7 +295,10 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
         if(fver2==fver1)
         {
             isSwapFrameSignaled = NO;
-            [self frame:frame toVideoBuffer:(Byte*)videoBuffer];
+            struct BitmapCrop bmpcrop;
+            ScalingAlgorithm sca;
+            int rw, rh;
+            Get_Frame_Bitmap((VDLFrame *)frame, videoBuffer, 0, &bmpcrop, SCREEN_WIDTH, SCREEN_HEIGHT, false, false, false, sca, &rw, &rh);
             fver1++;
         }
     }
@@ -312,10 +308,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
 - (OEIntRect)screenRect
 {
-    // hope this handles hires :/
-    OEIntRect rect = OEIntRectMake(0,0,SCREEN_WIDTH, SCREEN_HEIGHT);
-    return rect;
-    //return OEIntRectMake(0, 0, frame->srcw*2, frame->srch*2);
+    return OEIntRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 - (OEIntSize)bufferSize
@@ -333,7 +326,7 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 
     currentSector = 0;
     sampleCurrent = 0;
-    memset(sampleBuffer, 0, sizeof(uintptr_t)*TEMP_BUFFER_SIZE);
+    memset(sampleBuffer, 0, sizeof(int32_t)*TEMP_BUFFER_SIZE);
 }
 
 
@@ -601,8 +594,8 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
     if(sampleCurrent>TEMP_BUFFER_SIZE)
     {
         sampleCurrent = 0;
-        [[self ringBufferAtIndex:0] write:sampleBuffer maxLength:sizeof(uintptr_t)*TEMP_BUFFER_SIZE];
-        memset(sampleBuffer, 0, sizeof(uintptr_t)*TEMP_BUFFER_SIZE);
+        [[self ringBufferAtIndex:0] write:sampleBuffer maxLength:sizeof(int32_t)*TEMP_BUFFER_SIZE];
+        memset(sampleBuffer, 0, sizeof(int32_t)*TEMP_BUFFER_SIZE);
     }
 }
 
@@ -662,47 +655,6 @@ unsigned int _setBitTo(unsigned int storage, BOOL set, unsigned int bitmask)
 static uint32_t reverseBytes(uint32_t value)
 {
     return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 | (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
-}
-
--(void) frame:(VDLFrame*) framePtr toVideoBuffer:(Byte*) destPtr
-{
-    int copyHeight = framePtr->srch*2;
-    int copyWidth = framePtr->srcw*2;
-    for(int line = 0; line < copyHeight; line++)
-    {
-        VDLLine* linePtr = &framePtr->lines[line];
-        short* srcPtr = (short*)linePtr;
-        bool allowFixedClut = (linePtr->xOUTCONTROLL & 0x2000000) > 0;
-        for(int pix = 0; pix < copyWidth; pix++)
-        {
-            Byte bPart = 0;
-            Byte gPart = 0;
-            Byte rPart = 0;
-            if(*srcPtr == 0)
-            {
-                bPart = (Byte)(linePtr->xBACKGROUND & 0x1F);
-                gPart = (Byte)((linePtr->xBACKGROUND >> 5) & 0x1F);
-                rPart = (Byte)((linePtr->xBACKGROUND >> 10) & 0x1F);
-            }
-            else if(allowFixedClut && (*srcPtr & 0x8000) > 0)
-            {
-                bPart = FIXED_CLUTB[(*srcPtr) & 0x1F];
-                gPart = FIXED_CLUTG[((*srcPtr) >> 5) & 0x1F];
-                rPart = FIXED_CLUTR[(*srcPtr) >> 10 & 0x1F];
-            }
-            else
-            {
-                bPart = (Byte)(linePtr->xCLUTB[(*srcPtr) & 0x1F]);
-                gPart = linePtr->xCLUTG[((*srcPtr) >> 5) & 0x1F];
-                rPart = linePtr->xCLUTR[(*srcPtr) >> 10 & 0x1F];
-            }
-            *destPtr++ = bPart;
-            *destPtr++ = gPart;
-            *destPtr++ = rPart;
-            
-            srcPtr++;
-        }
-    }
 }
 
 @end
