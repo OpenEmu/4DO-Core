@@ -53,36 +53,15 @@
 #define INPUTBUTTONDOWN  (1<<14)
 
 typedef struct{
-	int buttons;			/* buttons bitfield */
-    
+	int buttons; // buttons bitfield
 }inputState;
 
 inputState internal_input_state[6];
 
 @interface FreeDOGameCore () <OE3DOSystemResponderClient>
-
-- (void)fdcCallbackKPrint:(void *)pv;
-- (void)fdcCallbackReadROM:(void *)pv;
-- (void)fdcCallbackReadNVRAM:(void *)pv;
-- (void)fdcCallbackWriteNVRAM:(void *)pv;
-- (void *)fdcCallbackSwapFrame:(void *)pv;
-- (void)fdcCallbackFrameTrigger;
-- (void)fdcCallbackRead2048:(void *)pv;
-- (void)fdcCallbackArmSync:(intptr_t)t;
-- (intptr_t)fdcCallbackGetDiscSize;
-- (void)fdcCallbackOnSector:(intptr_t)t;
-- (intptr_t)fdcCallbackGetPbusLength;
-- (void *)fdcCallbackGetPbus;
-- (void)fdcCallbackPushSample:(uintptr_t)t;
-
-@end
-
-FreeDOGameCore *current;
-
-@implementation FreeDOGameCore
 {
-    Byte* biosRom1Copy;
-    Byte* biosRom2Copy;
+    unsigned char *biosRom1Copy;
+    unsigned char *biosRom2Copy;
     void *nvramCopy;
     VDLFrame *frame;
     
@@ -91,61 +70,346 @@ FreeDOGameCore *current;
     int sectorCount;
     int currentSector;
     BOOL isSwapFrameSignaled;
-    NSMutableString* kprintBuffer;
     
     int fver1,fver2;
-
+    
     uint32_t *videoBuffer;
     int videoWidth, videoHeight;
     //uintptr_t sampleBuffer[TEMP_BUFFER_SIZE];
     int32_t sampleBuffer[TEMP_BUFFER_SIZE];
     uint sampleCurrent;
 }
+@end
 
-static void* fdcCallback(int procedure, void* data)
+FreeDOGameCore *current;
+
+@implementation FreeDOGameCore
+
+// libfreedo callback
+static void *fdcCallback(int procedure, void *data)
 {
     switch(procedure)
     {
         case EXT_READ_ROMS:
-            [current fdcCallbackReadROM:data];
+        {
+            memcpy(data, current->biosRom1Copy, ROM1_SIZE);
+            void *biosRom2Dest = (void*)((intptr_t)data + ROM2_SIZE);
+            memcpy(biosRom2Dest, current->biosRom2Copy, ROM2_SIZE);
+            
             break;
+        }
         case EXT_READ_NVRAM:
-            [current fdcCallbackReadNVRAM:data];
+            memcpy(data, current->nvramCopy, NVRAM_SIZE);
             break;
         case EXT_WRITE_NVRAM:
-            [current fdcCallbackWriteNVRAM:data];
+            // ?
             break;
         case EXT_SWAPFRAME:
-            return [current fdcCallbackSwapFrame:data];
+        {
+            current->isSwapFrameSignaled = YES;
+            return current->frame;
+        }
         case EXT_PUSH_SAMPLE:
-            [current fdcCallbackPushSample:(uintptr_t)data];
+        {
+            current->sampleBuffer[current->sampleCurrent] = (uintptr_t)data;
+            current->sampleCurrent++;
+            if(current->sampleCurrent > TEMP_BUFFER_SIZE)
+            {
+                current->sampleCurrent = 0;
+                [[current ringBufferAtIndex:0] write:current->sampleBuffer maxLength:sizeof(int32_t) * TEMP_BUFFER_SIZE];
+                memset(current->sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
+            }
+            
             break;
+        }
         case EXT_GET_PBUSLEN:
-            return (void*)[current fdcCallbackGetPbusLength];
+            return (void*)16;
         case EXT_GETP_PBUSDATA:
-            return [current fdcCallbackGetPbus];
+        {
+            // Set up raw data to return
+            unsigned char *pbusData;
+            pbusData = (unsigned char *)malloc(sizeof(unsigned char)*16);
+            
+            pbusData[0x0] = 0x00;
+            pbusData[0x1] = 0x48;
+            pbusData[0x2] = CalculateDeviceLowByte(0);
+            pbusData[0x3] = CalculateDeviceHighByte(0);
+            pbusData[0x4] = CalculateDeviceLowByte(2);
+            pbusData[0x5] = CalculateDeviceHighByte(2);
+            pbusData[0x6] = CalculateDeviceLowByte(1);
+            pbusData[0x7] = CalculateDeviceHighByte(1);
+            pbusData[0x8] = CalculateDeviceLowByte(4);
+            pbusData[0x9] = CalculateDeviceHighByte(4);
+            pbusData[0xA] = CalculateDeviceLowByte(3);
+            pbusData[0xB] = CalculateDeviceHighByte(3);
+            pbusData[0xC] = 0x00;
+            pbusData[0xD] = 0x80;
+            pbusData[0xE] = CalculateDeviceLowByte(5);
+            pbusData[0xF] = CalculateDeviceHighByte(5);
+            
+            return pbusData;
+        }
         case EXT_KPRINT:
-            [current fdcCallbackKPrint:data];
             break;
         case EXT_FRAMETRIGGER_MT:
-            [current fdcCallbackFrameTrigger];
+        {
+            current->isSwapFrameSignaled = YES;
+            _freedo_Interface(FDP_DO_FRAME_MT, current->frame);
+            
             break;
+        }
         case EXT_READ2048:
-            [current fdcCallbackRead2048:data];
+            [current readSector:current->currentSector toBuffer:(uint8_t*)data];
             break;
         case EXT_GET_DISC_SIZE:
-            return (void *)[current fdcCallbackGetDiscSize];
+            return (void *)(intptr_t)current->sectorCount;
         case EXT_ON_SECTOR:
-            [current fdcCallbackOnSector:(intptr_t)data];
+            current->currentSector = (intptr_t)data;
             break;
         case EXT_ARM_SYNC:
-            [current fdcCallbackArmSync:(intptr_t)data];
+            //[current fdcCallbackArmSync:(intptr_t)data];
+            NSLog(@"fdcCallback EXT_ARM_SYNC");
             break;
 
         default:
             break;
     }
     return (void*)0;
+}
+
+- (id)init
+{
+    if((self = [super init]))
+    {
+        current = self;
+    }
+    
+    return self;
+}
+
+- (void)dealloc
+{
+    free(videoBuffer);
+}
+
+#pragma mark Execution
+- (BOOL)loadFileAtPath:(NSString *)path error:(NSError **)error
+{
+    NSString *isoPath;
+    NSError *errorCue;
+    
+    currentSector = 0;
+    sampleCurrent = 0;
+    memset(sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
+    
+    NSString *cue = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&errorCue];
+    
+    const char *cueCString = [cue UTF8String];
+    Cd *cd = cue_parse_string(cueCString);
+    NSLog(@"CUE file found and parsed");
+    if (cd_get_ntrack(cd)!=1)
+    {
+        NSLog(@"Cue file found, but the number of tracks within was not 1.");
+        return NO;
+    }
+    
+    Track *track = cd_get_track(cd, 1);
+    isoMode = (TrackMode)track_get_mode(track);
+    
+    if ((isoMode!=MODE_MODE1&&isoMode!=MODE_MODE1_RAW))
+    {
+        NSLog(@"Cue file found, but the track within was not in the right format (should be BINARY and Mode1+2048 or Mode1+2352)");
+        return NO;
+    }
+    
+    NSString *isoTrack = [NSString stringWithUTF8String:track_get_filename(track)];
+    isoPath = [path stringByReplacingOccurrencesOfString:[path lastPathComponent] withString:isoTrack];
+    
+    isoStream = [NSFileHandle fileHandleForReadingAtPath:isoPath];
+    
+    uint8_t sectorZero[2048];
+    [self readSector:0 toBuffer:sectorZero];
+    VolumeHeader *header = (VolumeHeader*)sectorZero;
+    sectorCount = (int)reverseBytes(header->blockCount);
+    NSLog(@"Sector count is %d", sectorCount);
+    
+    return YES;
+}
+
+- (void)executeFrame
+{
+    [self executeFrameSkippingFrame:NO];
+}
+
+- (void)executeFrameSkippingFrame:(BOOL)skip
+{
+    _freedo_Interface(FDP_DO_EXECFRAME, frame); // FDP_DO_EXECFRAME_MT ?
+}
+
+- (void)setupEmulation
+{
+    [self loadBIOSes];
+    [self initNVRAM];
+    [self initVideo];
+    
+    currentSector = 0;
+    sampleCurrent = 0;
+    memset(sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
+    
+    _freedo_Interface(FDP_INIT, (void*)*fdcCallback);
+}
+
+- (void)resetEmulation
+{
+    // looks like libfreedo cannot do this :|
+}
+
+- (void)stopEmulation
+{
+    _freedo_Interface(FDP_DESTROY, (void*)0);
+    [super stopEmulation];
+}
+
+- (NSTimeInterval)frameInterval
+{
+    return 60;
+}
+
+- (void)readSector:(uint)sectorNumber toBuffer:(uint8_t*)buffer
+{
+    if(isoMode==MODE_MODE1_RAW)
+    {
+        [isoStream seekToFileOffset:2352 * sectorNumber + 0x10];
+    }
+    else
+    {
+        [isoStream seekToFileOffset:2048 * sectorNumber];
+    }
+    NSData *data = [isoStream readDataOfLength:2048];
+    memcpy(buffer, [data bytes], 2048);
+}
+
+#pragma mark Video
+- (const void *)videoBuffer
+{
+    if(isSwapFrameSignaled)
+    {
+        if(fver2==fver1)
+        {
+            isSwapFrameSignaled = NO;
+            struct BitmapCrop bmpcrop;
+            ScalingAlgorithm sca;
+            int rw, rh;
+            Get_Frame_Bitmap((VDLFrame *)frame, videoBuffer, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
+            fver1++;
+        }
+    }
+    fver2=fver1;
+    return videoBuffer;
+}
+
+- (OEIntRect)screenRect
+{
+    return OEIntRectMake(0, 0, videoWidth, videoHeight);
+}
+
+- (OEIntSize)bufferSize
+{
+    return OEIntSizeMake(videoWidth, videoHeight);
+}
+
+- (GLenum)pixelFormat
+{
+    return GL_BGRA;
+}
+
+- (GLenum)pixelType
+{
+    return GL_UNSIGNED_INT_8_8_8_8_REV;
+}
+
+- (GLenum)internalPixelFormat
+{
+    return GL_RGB8;
+}
+
+#pragma mark - Audio
+- (double)audioSampleRate
+{
+    return 44100;
+}
+
+- (NSUInteger)channelCount
+{
+    return 2;
+}
+
+#pragma mark - Save States
+- (BOOL)saveStateToFileAtPath:(NSString *)fileName
+{
+    size_t size = (uintptr_t)_freedo_Interface(FDP_GET_SAVE_SIZE, (void*)0);
+    void *data = malloc(sizeof(uintptr_t)*size);
+    _freedo_Interface(FDP_DO_SAVE, data);
+    NSData *saveData = [NSData dataWithBytesNoCopy:data length:size freeWhenDone:YES];
+    NSLog(@"Game saved, length in bytes: %lu", saveData.length);
+    
+    return [saveData writeToFile:fileName atomically:NO];
+}
+
+- (BOOL)loadStateFromFileAtPath:(NSString *)fileName
+{
+    NSData *saveData = [NSData dataWithContentsOfFile:fileName];
+    size_t size = sizeof(uintptr_t)*saveData.length;
+    void *loadBuffer = malloc(size);
+    [saveData getBytes:loadBuffer];
+    
+    return _freedo_Interface(FDP_DO_LOAD, loadBuffer)!=0;
+}
+
+#pragma mark - Input
+- (oneway void)didPush3DOButton:(OE3DOButton)button forPlayer:(NSUInteger)player
+{
+    player--;
+    
+    switch(button)
+    {
+        case OE3DOButtonA:
+            internal_input_state[0].buttons|=INPUTBUTTONA;
+            break;
+        case OE3DOButtonB:
+            internal_input_state[0].buttons|=INPUTBUTTONB;
+            break;
+        case OE3DOButtonC:
+            internal_input_state[0].buttons|=INPUTBUTTONC;
+            break;
+        case OE3DOButtonX:
+            internal_input_state[0].buttons|=INPUTBUTTONX;
+            break;
+        case OE3DOButtonP:
+            internal_input_state[0].buttons|=INPUTBUTTONP;
+            break;
+        case OE3DOButtonLeft:
+            internal_input_state[0].buttons|=INPUTBUTTONLEFT;
+            break;
+        case OE3DOButtonRight:
+            internal_input_state[0].buttons|=INPUTBUTTONRIGHT;
+            break;
+        case OE3DOButtonUp:
+            internal_input_state[0].buttons|=INPUTBUTTONUP;
+            break;
+        case OE3DOButtonDown:
+            internal_input_state[0].buttons|=INPUTBUTTONDOWN;
+            break;
+        case OE3DOButtonL:
+            internal_input_state[0].buttons|=INPUTBUTTONL;
+            break;
+        case OE3DOButtonR:
+            internal_input_state[0].buttons|=INPUTBUTTONR;
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (oneway void)didRelease3DOButton:(OE3DOButton)button forPlayer:(NSUInteger)player
@@ -193,429 +457,18 @@ static void* fdcCallback(int procedure, void* data)
     }
 }
 
-- (oneway void)didPush3DOButton:(OE3DOButton)button forPlayer:(NSUInteger)player
-{
-    player--;
-    
-    switch(button)
-    {
-        case OE3DOButtonA:
-            internal_input_state[0].buttons|=INPUTBUTTONA;
-            break;
-        case OE3DOButtonB:
-            internal_input_state[0].buttons|=INPUTBUTTONB;
-            break;
-        case OE3DOButtonC:
-            internal_input_state[0].buttons|=INPUTBUTTONC;
-            break;
-        case OE3DOButtonX:
-            internal_input_state[0].buttons|=INPUTBUTTONX;
-            break;
-        case OE3DOButtonP:
-            internal_input_state[0].buttons|=INPUTBUTTONP;
-            break;
-        case OE3DOButtonLeft:
-            internal_input_state[0].buttons|=INPUTBUTTONLEFT;
-            break;
-        case OE3DOButtonRight:
-            internal_input_state[0].buttons|=INPUTBUTTONRIGHT;
-            break;
-        case OE3DOButtonUp:
-            internal_input_state[0].buttons|=INPUTBUTTONUP;
-            break;
-        case OE3DOButtonDown:
-            internal_input_state[0].buttons|=INPUTBUTTONDOWN;
-            break;
-        case OE3DOButtonL:
-            internal_input_state[0].buttons|=INPUTBUTTONL;
-            break;
-        case OE3DOButtonR:
-            internal_input_state[0].buttons|=INPUTBUTTONR;
-            break;
-            
-        default:
-            break;
-    }
-}
-
-- (id)init
-{
-    if((self = [super init]))
-    {
-        current = self;
-    }
-    
-    return self;
-}
-
-#pragma mark Exectuion
-
-- (void)executeFrame
-{
-    [self executeFrameSkippingFrame:NO];
-}
-
-- (void)executeFrameSkippingFrame: (BOOL) skip
-{
-    [self fdcDoExecuteFrame:frame];
-}
-
-- (void) readSector:(uint) sectorNumber toBuffer:(uint8_t*) buffer
-{
-    if(isoMode==MODE_MODE1_RAW)
-    {
-        [isoStream seekToFileOffset:2352 * sectorNumber + 0x10];
-    }
-    else
-    {
-        [isoStream seekToFileOffset:2048 * sectorNumber];
-    }
-    NSData *data = [isoStream readDataOfLength:2048];
-    memcpy(buffer, [data bytes], 2048);
-}
-
-- (BOOL)loadFileAtPath:(NSString *)path error:(NSError **)error
-{
-    NSString* isoPath;
-    NSError* errorCue;
-
-    currentSector = 0;
-    sampleCurrent = 0;
-    memset(sampleBuffer, 0, sizeof(int32_t)*TEMP_BUFFER_SIZE);
-
-    NSString* cue = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&errorCue];
-
-    const char* cueCString = [cue UTF8String];
-    Cd* cd = cue_parse_string(cueCString);
-    NSLog(@"CUE file found and parsed");
-    if (cd_get_ntrack(cd)!=1)
-    {
-        NSLog(@"Cue file found, but the number of tracks within was not 1.");
-        return NO;
-    }
-
-    Track* track = cd_get_track(cd, 1);
-    isoMode = (TrackMode)track_get_mode(track);
-
-    if ((isoMode!=MODE_MODE1&&isoMode!=MODE_MODE1_RAW))
-    {
-        NSLog(@"Cue file found, but the track within was not in the right format (should be BINARY and Mode1+2048 or Mode1+2352)");
-        return NO;
-    }
-    
-    NSString *isoTrack = [NSString stringWithUTF8String:track_get_filename(track)];
-    isoPath = [path stringByReplacingOccurrencesOfString:[path lastPathComponent] withString:isoTrack];
-
-    isoStream = [NSFileHandle fileHandleForReadingAtPath:isoPath];
-
-    uint8_t sectorZero[2048];
-    [self readSector:0 toBuffer:sectorZero];
-    VolumeHeader* header = (VolumeHeader*)sectorZero;
-    sectorCount = (int)reverseBytes(header->blockCount);
-    NSLog(@"Sector count is %d", sectorCount);
-
-    return YES;
-}
-
-#pragma mark Video
-- (const void *)videoBuffer
-{
-    if(isSwapFrameSignaled)
-    {
-        if(fver2==fver1)
-        {
-            isSwapFrameSignaled = NO;
-            struct BitmapCrop bmpcrop;
-            ScalingAlgorithm sca;
-            int rw, rh;
-            Get_Frame_Bitmap((VDLFrame *)frame, videoBuffer, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
-            fver1++;
-        }
-    }
-    fver2=fver1;
-    return videoBuffer;
-}
-
-- (OEIntRect)screenRect
-{
-    return OEIntRectMake(0, 0, videoWidth, videoHeight);
-}
-
-- (OEIntSize)bufferSize
-{
-    return OEIntSizeMake(videoWidth, videoHeight);
-}
-
-
-- (void)setupEmulation
-{
-    [self loadBIOSes];
-    [self initPBusAndNVRAM];
-    [self initKPrintBuffer];
-    [self initVideo];
-
-    currentSector = 0;
-    sampleCurrent = 0;
-    memset(sampleBuffer, 0, sizeof(int32_t)*TEMP_BUFFER_SIZE);
-}
-
-
-- (void)resetEmulation
-{
-//    [super resetEmulation];
-}
-
-
-- (void) startEmulation
-{
-    NSLog(@"FreeDO version: %d",[self fdcGetCoreVersion]);
-    [self fdcInitialize];
-    [super startEmulation];
-}
-
-- (void)stopEmulation
-{
-    [self fdcDestroy];
-    [super stopEmulation];
-}
-
-- (GLenum)pixelFormat
-{
-    return GL_BGRA;
-}
-
-- (GLenum)pixelType
-{
-    return GL_UNSIGNED_INT_8_8_8_8_REV;
-}
-
-- (GLenum)internalPixelFormat
-{
-    return GL_RGB8;
-}
-
-- (NSTimeInterval)frameInterval
-{
-    return frameInterval ? frameInterval : 60;
-}
-
-- (double)audioSampleRate
-{
-    return 44100;
-}
-
-- (NSUInteger)soundBufferSize
-{
-    return TEMP_BUFFER_SIZE;
-}
-
-- (NSUInteger)channelCount
-{
-    return 2;
-}
-
-- (NSUInteger)audioBitDepth
-{
-    return 16;
-}
-
-- (BOOL)saveStateToFileAtPath:(NSString *)fileName
-{
-    size_t size = [self fdcGetSaveSize];
-    void *data = malloc(sizeof(uintptr_t)*size);
-    [self fdcDoSave:data];
-    NSData *saveData = [NSData dataWithBytesNoCopy:data length:size freeWhenDone:YES];
-    NSLog(@"Game saved, length in bytes: %lu", saveData.length);
-    return [saveData writeToFile:fileName atomically:NO];
-}
-
-- (BOOL)loadStateFromFileAtPath:(NSString *)fileName
-{
-    NSData *saveData = [NSData dataWithContentsOfFile:fileName];
-    size_t size = sizeof(uintptr_t)*saveData.length;
-    void* loadBuffer = malloc(size);
-    [saveData getBytes:loadBuffer];
-    return [self fdcDoLoad:loadBuffer];
-}
-
-#pragma mark - FreeDoInterface
-
--(void*) _freedoActionWithInterfaceFunction:(int) procedure datum:(void*) datum
-{
-    return _freedo_Interface(procedure, datum);
-}
-
--(int) fdcGetCoreVersion
-{
-    return (uintptr_t)[self _freedoActionWithInterfaceFunction:FDP_FREEDOCORE_VERSION datum:(void*)0];
-}
-
--(int) fdcGetSaveSize
-{
-    return (uintptr_t)[self _freedoActionWithInterfaceFunction:FDP_GET_SAVE_SIZE datum:(void*)0];
-}
-
--(void*) fdcGetPointerNVRAM
-{
-    return [self _freedoActionWithInterfaceFunction:FDP_GETP_NVRAM datum:(void*)0];
-}
-
--(void*) fdcGetPointerRAM
-{
-    return [self _freedoActionWithInterfaceFunction:FDP_GETP_RAMS datum:(void*)0];
-}
-
--(void*) fdcGetPointerROM
-{
-    return [self _freedoActionWithInterfaceFunction:FDP_GETP_ROMS datum:(void*)0];
-}
-
--(void*) fdcGetPointerProfile
-{
-    return [self _freedoActionWithInterfaceFunction:FDP_GETP_PROFILE datum:(void*)0];
-}
-
--(int) fdcInitialize
-{
-    return (intptr_t)[self _freedoActionWithInterfaceFunction:FDP_INIT datum:(void*)*fdcCallback];
-}
-
--(void) fdcDestroy
-{
-    [self _freedoActionWithInterfaceFunction:FDP_DESTROY datum:(void*)0];
-}
-
--(void) fdcDoExecuteFrame:(void*)vdlFrame
-{
-    [self _freedoActionWithInterfaceFunction:FDP_DO_EXECFRAME datum:vdlFrame];
-}
-
--(void) fdcDoExecuteFrameMultitask:(void*)vdlFrame
-{
-    [self _freedoActionWithInterfaceFunction:FDP_DO_EXECFRAME_MT datum:vdlFrame];
-}
-
--(void) fdcDoFrameMultitask:(void*)vdlFrame
-{
-    [self _freedoActionWithInterfaceFunction:FDP_DO_FRAME_MT datum:vdlFrame];
-}
-
--(BOOL) fdcDoLoad:(void*)buffer
-{
-    return [self _freedoActionWithInterfaceFunction:FDP_DO_LOAD datum:buffer]!=0;
-}
-
--(void) fdcDoSave:(void*)buffer
-{
-    [self _freedoActionWithInterfaceFunction:FDP_DO_SAVE datum:buffer];
-}
-
--(void*) fdcSetArmClock:(int)clock
-{
-    //untested!
-    return [self _freedoActionWithInterfaceFunction:FDP_SET_ARMCLOCK datum:(void*) clock];
-}
-
--(void*) fdcSetFixMode:(int)fixMode
-{
-    return [self _freedoActionWithInterfaceFunction:FDP_SET_FIX_MODE datum:(void*) fixMode];
-}
-
--(void*) fdcSetTextureQuality:(int)textureQuality
-{
-    return [self _freedoActionWithInterfaceFunction:FDP_SET_TEXQUALITY datum:(void*) textureQuality];
-}
-
-- (void)fdcCallbackKPrint:(void *)pv
-{
-    NSString* currentChar = [NSString stringWithFormat:@"%c", pv];
-    if ([currentChar isEqualToString:@"\n"])
-    {
-        NSLog(@"KPRINT: %@", kprintBuffer);
-        kprintBuffer = [NSMutableString string];
-    }
-    else
-    {
-        [kprintBuffer appendString:currentChar];
-    }
-}
-
-- (void)fdcCallbackReadROM:(void *)pv
-{
-    //NSLog(@"fdcCallbackReadROM");
-    memcpy(pv, biosRom1Copy, ROM1_SIZE);
-    void *biosRom2Dest = (void*)((intptr_t)pv+ROM2_SIZE);
-    memcpy(biosRom2Dest, biosRom2Copy, ROM2_SIZE);
-}
-
-- (void)fdcCallbackReadNVRAM:(void *)buffer
-{
-    //NSLog(@"fdcCallbackReadNVRAM");
-    memcpy(buffer, nvramCopy, NVRAM_SIZE);
-}
-
-- (void)fdcCallbackWriteNVRAM:(void *)pv
-{
-    //NSLog(@"fdcCallbackWriteNVRAM");
-}
-
-- (void *)fdcCallbackSwapFrame:(void *)pv
-{
-    isSwapFrameSignaled = YES;
-    return frame;
-}
-
-- (void)fdcCallbackFrameTrigger
-{
-    //NSLog(@"fdcCallbackFrameTrigger");
-    isSwapFrameSignaled = YES;
-    [self fdcDoFrameMultitask:frame];
-}
-
-- (void)fdcCallbackRead2048:(void *)buffer
-{
-    //NSLog(@"fdcCallbackRead2048");
-    [self readSector:currentSector toBuffer:(uint8_t*)buffer];
-}
-
-- (void)fdcCallbackArmSync:(intptr_t)t
-{
-    NSLog(@"fdcCallbackArmSync");
-}
-
-- (intptr_t)fdcCallbackGetDiscSize
-{
-    //NSLog(@"fdcCallbackGetDiscSize");
-    return sectorCount;
-}
-
-- (void)fdcCallbackOnSector:(intptr_t)sector
-{
-    //NSLog(@"fdcCallbackOnSector");
-    currentSector = sector;
-}
-
-- (intptr_t)fdcCallbackGetPbusLength
-{
-    return 16;
-}
-
 int CheckDownButton(int deviceNumber,int button)
 {
-    
-	if(internal_input_state[deviceNumber].buttons&button) return 1;
-	else return 0;
-	
-    
+	if(internal_input_state[deviceNumber].buttons&button)
+        return 1;
+	else
+        return 0;
 }
 
 char CalculateDeviceLowByte(int deviceNumber)
 {
 	char returnValue = 0;
-    
-    //	if (deviceNumber >= deviceCount)
-    //		return returnValue;
-    
+
     returnValue |= 0x01 & 0; // unknown
     returnValue |= 0x02 & 0; // unknown
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONL) ? (char)0x04 : (char)0;
@@ -631,10 +484,7 @@ char CalculateDeviceLowByte(int deviceNumber)
 char CalculateDeviceHighByte(int deviceNumber)
 {
 	char returnValue = 0;
-    
-    //	if (deviceNumber >= deviceCount)
-    //		return returnValue;
-    
+
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONA)     ? (char)0x01 : (char)0;
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONLEFT)  ? (char)0x02 : (char)0;
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONRIGHT) ? (char)0x04 : (char)0;
@@ -647,49 +497,47 @@ char CalculateDeviceHighByte(int deviceNumber)
     return returnValue;
 }
 
-- (void *)fdcCallbackGetPbus
-{
-    // Set up raw data to return
-    unsigned char *data;
-    data = (unsigned char *)malloc(sizeof(unsigned char)*16);
-    
-    data[0x0] = 0x00;
-	data[0x1] = 0x48;
-	data[0x2] = CalculateDeviceLowByte(0);
-	data[0x3] = CalculateDeviceHighByte(0);
-	data[0x4] = CalculateDeviceLowByte(2);
-	data[0x5] = CalculateDeviceHighByte(2);
-	data[0x6] = CalculateDeviceLowByte(1);
-	data[0x7] = CalculateDeviceHighByte(1);
-	data[0x8] = CalculateDeviceLowByte(4);
-	data[0x9] = CalculateDeviceHighByte(4);
-	data[0xA] = CalculateDeviceLowByte(3);
-	data[0xB] = CalculateDeviceHighByte(3);
-	data[0xC] = 0x00;
-	data[0xD] = 0x80;
-	data[0xE] = CalculateDeviceLowByte(5);
-	data[0xF] = CalculateDeviceHighByte(5);
-    
-    return data;
-}
-
-//FIXME: Audio need some work
-- (void)fdcCallbackPushSample:(uintptr_t)sample
-{
-    //NSLog(@"fdcCallbackPushSample");
-    sampleBuffer[sampleCurrent] = sample;
-    sampleCurrent ++;
-    if(sampleCurrent>TEMP_BUFFER_SIZE)
-    {
-        sampleCurrent = 0;
-        [[self ringBufferAtIndex:0] write:sampleBuffer maxLength:sizeof(int32_t)*TEMP_BUFFER_SIZE];
-        memset(sampleBuffer, 0, sizeof(int32_t)*TEMP_BUFFER_SIZE);
-    }
-}
+#pragma mark - FreeDoInterface
+//TODO: investigate these
+//-(void*)fdcGetPointerNVRAM
+//{
+//    return [self _freedoActionWithInterfaceFunction:FDP_GETP_NVRAM datum:(void*)0];
+//}
+//
+//-(void*)fdcGetPointerRAM
+//{
+//    return [self _freedoActionWithInterfaceFunction:FDP_GETP_RAMS datum:(void*)0];
+//}
+//
+//-(void*)fdcGetPointerROM
+//{
+//    return [self _freedoActionWithInterfaceFunction:FDP_GETP_ROMS datum:(void*)0];
+//}
+//
+//-(void*)fdcGetPointerProfile
+//{
+//    return [self _freedoActionWithInterfaceFunction:FDP_GETP_PROFILE datum:(void*)0];
+//}
+//
+//-(void)fdcDoExecuteFrameMultitask:(void*)vdlFrame
+//{
+//    [self _freedoActionWithInterfaceFunction:FDP_DO_EXECFRAME_MT datum:vdlFrame];
+//}
+//
+//-(void*)fdcSetArmClock:(int)clock
+//{
+//    //untested!
+//    return [self _freedoActionWithInterfaceFunction:FDP_SET_ARMCLOCK datum:(void*) clock];
+//}
+//
+//-(void*)fdcSetFixMode:(int)fixMode
+//{
+//    return [self _freedoActionWithInterfaceFunction:FDP_SET_FIX_MODE datum:(void*) fixMode];
+//}
 
 #pragma mark - Helpers
 
-- (void) initVideo
+- (void)initVideo
 {
     if(videoBuffer)
         free(videoBuffer);
@@ -702,27 +550,22 @@ char CalculateDeviceHighByte(int deviceNumber)
     fver2=fver1=0;
 }
 
--(void) initKPrintBuffer
-{
-    kprintBuffer = [NSMutableString string];
-}
-
-- (void)initPBusAndNVRAM
+- (void)initNVRAM
 {
     nvramCopy = malloc(65536/2);
-    memset(nvramCopy,0,65536/2);
-    memcpy(nvramCopy,nvramhead,sizeof(nvramhead));
+    memset(nvramCopy, 0, 65536/2);
+    memcpy(nvramCopy, nvramhead, sizeof(nvramhead));
     frame = (VDLFrame*)malloc(sizeof(VDLFrame));
     memset(frame, 0, sizeof(VDLFrame));
 }
 
--(void) loadBIOSes
+- (void)loadBIOSes
 {
     NSString *rom1Path = [[self biosDirectoryPath] stringByAppendingPathComponent:@"panafz10.bin"];
     NSData *data = [NSData dataWithContentsOfFile:rom1Path];
     NSUInteger len = [data length];
     assert(len==ROM1_SIZE);
-    biosRom1Copy = (Byte*)malloc(len);
+    biosRom1Copy = (unsigned char *)malloc(len);
     memcpy(biosRom1Copy, [data bytes], len);
 
     // "ROM 2 Japanese Character ROM" / Set it if we find it. It's not requiered for soem JAP games. We still have to init the memory tho
@@ -732,13 +575,13 @@ char CalculateDeviceHighByte(int deviceNumber)
     {
         len = [data length];
         assert(len==ROM2_SIZE);
-        biosRom2Copy = (Byte*)malloc(len);
+        biosRom2Copy = (unsigned char *)malloc(len);
         memcpy(biosRom2Copy, [data bytes], len);
     }
     else
     {
-        biosRom2Copy = (Byte*)malloc(len);
-        memset(biosRom2Copy,0,len);
+        biosRom2Copy = (unsigned char *)malloc(len);
+        memset(biosRom2Copy, 0, len);
     }
 }
 
