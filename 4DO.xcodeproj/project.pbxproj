@@ -36,18 +36,6 @@
 
 /* Begin PBXBuildFile section */
 		37E8246E172B7BEB00E58D77 /* OE3DOSystemResponderClient.h in Resources */ = {isa = PBXBuildFile; fileRef = 37E8246D172B7BEB00E58D77 /* OE3DOSystemResponderClient.h */; };
-		575ACC171582D4E200EAC45A /* _3do_sys.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12271582B03E003F64E5 /* _3do_sys.cpp */; };
-		575ACC181582D4E200EAC45A /* arm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12281582B03E003F64E5 /* arm.cpp */; };
-		575ACC191582D4E200EAC45A /* bitop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122A1582B03E003F64E5 /* bitop.cpp */; };
-		575ACC1A1582D4E200EAC45A /* Clio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122C1582B03E003F64E5 /* Clio.cpp */; };
-		575ACC1B1582D4E200EAC45A /* DiagPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122E1582B03E003F64E5 /* DiagPort.cpp */; };
-		575ACC1C1582D4E200EAC45A /* DSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12301582B03E003F64E5 /* DSP.cpp */; };
-		575ACC1D1582D4E200EAC45A /* Iso.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12341582B03F003F64E5 /* Iso.cpp */; };
-		575ACC1E1582D4E200EAC45A /* Madam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12371582B03F003F64E5 /* Madam.cpp */; };
-		575ACC1F1582D4E200EAC45A /* quarz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123A1582B03F003F64E5 /* quarz.cpp */; };
-		575ACC201582D4E200EAC45A /* SPORT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123C1582B03F003F64E5 /* SPORT.cpp */; };
-		575ACC211582D4E200EAC45A /* vdlp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123F1582B03F003F64E5 /* vdlp.cpp */; };
-		575ACC221582D4E200EAC45A /* XBUS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12411582B03F003F64E5 /* XBUS.cpp */; };
 		575ACC2D1582D50400EAC45A /* cd.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBE81582C37400EAC45A /* cd.c */; };
 		575ACC2E1582D50400EAC45A /* cdtext.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEA1582C37400EAC45A /* cdtext.c */; };
 		575ACC2F1582D50400EAC45A /* cue_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEC1582C37400EAC45A /* cue_parser.c */; };
@@ -57,23 +45,26 @@
 		575ACC331582D50400EAC45A /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF71582C37400EAC45A /* rem.c */; };
 		575ACC341582D50400EAC45A /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF91582C37400EAC45A /* time.c */; };
 		575ACC391582D51900EAC45A /* liblibcue.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC271582D4F000EAC45A /* liblibcue.a */; };
-		575ACC3A1582D51900EAC45A /* liblibfreedo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 575ACC131582D4BE00EAC45A /* liblibfreedo.a */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		942597C515146FF40074E3A3 /* OpenEmuBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 942597C415146FF40074E3A3 /* OpenEmuBase.framework */; };
-		94551A1019A570170080929A /* frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94551A0E19A570170080929A /* frame.cpp */; };
-		94551A1119A570170080929A /* frame.h in Headers */ = {isa = PBXBuildFile; fileRef = 94551A0F19A570170080929A /* frame.h */; };
+		94551A1719A71E390080929A /* _3do_sys.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12271582B03E003F64E5 /* _3do_sys.cpp */; };
+		94551A1819A71E390080929A /* arm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12281582B03E003F64E5 /* arm.cpp */; };
+		94551A1919A71E390080929A /* bitop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122A1582B03E003F64E5 /* bitop.cpp */; };
+		94551A1A19A71E390080929A /* Clio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122C1582B03E003F64E5 /* Clio.cpp */; };
+		94551A1B19A71E390080929A /* DiagPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D122E1582B03E003F64E5 /* DiagPort.cpp */; };
+		94551A1C19A71E390080929A /* DSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12301582B03E003F64E5 /* DSP.cpp */; };
+		94551A1D19A71E390080929A /* frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94551A0E19A570170080929A /* frame.cpp */; };
+		94551A1E19A71E390080929A /* Iso.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12341582B03F003F64E5 /* Iso.cpp */; };
+		94551A1F19A71E390080929A /* Madam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12371582B03F003F64E5 /* Madam.cpp */; };
+		94551A2019A71E390080929A /* quarz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123A1582B03F003F64E5 /* quarz.cpp */; };
+		94551A2119A71E390080929A /* SPORT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123C1582B03F003F64E5 /* SPORT.cpp */; };
+		94551A2219A71E390080929A /* vdlp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D123F1582B03F003F64E5 /* vdlp.cpp */; };
+		94551A2319A71E390080929A /* XBUS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 578D12411582B03F003F64E5 /* XBUS.cpp */; };
 		94D9257314CA9879008F697D /* FreeDOGameCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 826FE0F41014D8930023A8E9 /* FreeDOGameCore.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		575ACC351582D51000EAC45A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 575ACC121582D4BE00EAC45A;
-			remoteInfo = libfreedo;
-		};
 		575ACC371582D51000EAC45A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
@@ -139,7 +130,6 @@
 		575ACBF91582C37400EAC45A /* time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = time.c; sourceTree = "<group>"; };
 		575ACBFA1582C37400EAC45A /* time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = time.h; sourceTree = "<group>"; };
 		575ACC0E1582C3A100EAC45A /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = "libcue-1.4.0/config.h"; sourceTree = SOURCE_ROOT; };
-		575ACC131582D4BE00EAC45A /* liblibfreedo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibfreedo.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		575ACC271582D4F000EAC45A /* liblibcue.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibcue.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		578D12271582B03E003F64E5 /* _3do_sys.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = _3do_sys.cpp; sourceTree = "<group>"; };
 		578D12281582B03E003F64E5 /* arm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = arm.cpp; sourceTree = "<group>"; };
@@ -179,13 +169,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		575ACC101582D4BE00EAC45A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		575ACC241582D4F000EAC45A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -198,7 +181,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				575ACC391582D51900EAC45A /* liblibcue.a in Frameworks */,
-				575ACC3A1582D51900EAC45A /* liblibfreedo.a in Frameworks */,
 				942597C515146FF40074E3A3 /* OpenEmuBase.framework in Frameworks */,
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 			);
@@ -272,7 +254,6 @@
 			isa = PBXGroup;
 			children = (
 				8D5B49B6048680CD000E48DA /* 4DO.oecoreplugin */,
-				575ACC131582D4BE00EAC45A /* liblibfreedo.a */,
 				575ACC271582D4F000EAC45A /* liblibcue.a */,
 			);
 			name = Products;
@@ -339,14 +320,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		575ACC111582D4BE00EAC45A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				94551A1119A570170080929A /* frame.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		575ACC251582D4F000EAC45A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -357,23 +330,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		575ACC121582D4BE00EAC45A /* libfreedo */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 575ACC141582D4BE00EAC45A /* Build configuration list for PBXNativeTarget "libfreedo" */;
-			buildPhases = (
-				575ACC0F1582D4BE00EAC45A /* Sources */,
-				575ACC101582D4BE00EAC45A /* Frameworks */,
-				575ACC111582D4BE00EAC45A /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = libfreedo;
-			productName = libfreedo;
-			productReference = 575ACC131582D4BE00EAC45A /* liblibfreedo.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		575ACC261582D4F000EAC45A /* libcue */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 575ACC281582D4F000EAC45A /* Build configuration list for PBXNativeTarget "libcue" */;
@@ -403,7 +359,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				575ACC361582D51000EAC45A /* PBXTargetDependency */,
 				575ACC381582D51000EAC45A /* PBXTargetDependency */,
 			);
 			name = 4DO;
@@ -435,7 +390,6 @@
 				8D5B49AC048680CD000E48DA /* 4DO */,
 				82B9195310150EA2007BD6DB /* Build & Install 4DO */,
 				8230C6A110AFBC9100412F24 /* Distribution */,
-				575ACC121582D4BE00EAC45A /* libfreedo */,
 				575ACC261582D4F000EAC45A /* libcue */,
 			);
 		};
@@ -483,26 +437,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		575ACC0F1582D4BE00EAC45A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				575ACC171582D4E200EAC45A /* _3do_sys.cpp in Sources */,
-				575ACC181582D4E200EAC45A /* arm.cpp in Sources */,
-				575ACC191582D4E200EAC45A /* bitop.cpp in Sources */,
-				575ACC1A1582D4E200EAC45A /* Clio.cpp in Sources */,
-				575ACC1B1582D4E200EAC45A /* DiagPort.cpp in Sources */,
-				575ACC1C1582D4E200EAC45A /* DSP.cpp in Sources */,
-				575ACC1D1582D4E200EAC45A /* Iso.cpp in Sources */,
-				575ACC1E1582D4E200EAC45A /* Madam.cpp in Sources */,
-				575ACC1F1582D4E200EAC45A /* quarz.cpp in Sources */,
-				575ACC201582D4E200EAC45A /* SPORT.cpp in Sources */,
-				575ACC211582D4E200EAC45A /* vdlp.cpp in Sources */,
-				575ACC221582D4E200EAC45A /* XBUS.cpp in Sources */,
-				94551A1019A570170080929A /* frame.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		575ACC231582D4F000EAC45A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -523,17 +457,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				94D9257314CA9879008F697D /* FreeDOGameCore.mm in Sources */,
+				94551A1719A71E390080929A /* _3do_sys.cpp in Sources */,
+				94551A1819A71E390080929A /* arm.cpp in Sources */,
+				94551A1919A71E390080929A /* bitop.cpp in Sources */,
+				94551A1A19A71E390080929A /* Clio.cpp in Sources */,
+				94551A1B19A71E390080929A /* DiagPort.cpp in Sources */,
+				94551A1C19A71E390080929A /* DSP.cpp in Sources */,
+				94551A1D19A71E390080929A /* frame.cpp in Sources */,
+				94551A1E19A71E390080929A /* Iso.cpp in Sources */,
+				94551A1F19A71E390080929A /* Madam.cpp in Sources */,
+				94551A2019A71E390080929A /* quarz.cpp in Sources */,
+				94551A2119A71E390080929A /* SPORT.cpp in Sources */,
+				94551A2219A71E390080929A /* vdlp.cpp in Sources */,
+				94551A2319A71E390080929A /* XBUS.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		575ACC361582D51000EAC45A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 575ACC121582D4BE00EAC45A /* libfreedo */;
-			targetProxy = 575ACC351582D51000EAC45A /* PBXContainerItemProxy */;
-		};
 		575ACC381582D51000EAC45A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 575ACC261582D4F000EAC45A /* libcue */;
@@ -674,41 +616,6 @@
 			};
 			name = Release;
 		};
-		575ACC151582D4BE00EAC45A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		575ACC161582D4BE00EAC45A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		575ACC291582D4F000EAC45A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -793,15 +700,6 @@
 			buildConfigurations = (
 				1DEB913F08733D840010E9CD /* Debug */,
 				1DEB914008733D840010E9CD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		575ACC141582D4BE00EAC45A /* Build configuration list for PBXNativeTarget "libfreedo" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				575ACC151582D4BE00EAC45A /* Debug */,
-				575ACC161582D4BE00EAC45A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
