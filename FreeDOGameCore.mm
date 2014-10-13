@@ -1,28 +1,28 @@
 /*
  Copyright (c) 2014, OpenEmu Team
  
-
+ 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-     * Redistributions of source code must retain the above copyright
-       notice, this list of conditions and the following disclaimer.
-     * Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-     * Neither the name of the OpenEmu Team nor the
-       names of its contributors may be used to endorse or promote products
-       derived from this software without specific prior written permission.
-
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ * Neither the name of the OpenEmu Team nor the
+ names of its contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
+ 
  THIS SOFTWARE IS PROVIDED BY OpenEmu Team ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  DISCLAIMED. IN NO EVENT SHALL OpenEmu Team BE LIABLE FOR ANY
  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #import "FreeDOGameCore.h"
@@ -53,7 +53,7 @@
 #define INPUTBUTTONDOWN  (1<<14)
 
 typedef struct{
-	int buttons; // buttons bitfield
+    int buttons; // buttons bitfield
 }inputState;
 
 inputState internal_input_state[6];
@@ -113,7 +113,7 @@ static void *fdcCallback(int procedure, void *data)
         {
             current->sampleBuffer[current->sampleCurrent] = (uintptr_t)data;
             current->sampleCurrent++;
-            if(current->sampleCurrent > TEMP_BUFFER_SIZE)
+            if(current->sampleCurrent >= TEMP_BUFFER_SIZE)
             {
                 current->sampleCurrent = 0;
                 [[current ringBufferAtIndex:0] write:current->sampleBuffer maxLength:sizeof(int32_t) * TEMP_BUFFER_SIZE];
@@ -170,7 +170,7 @@ static void *fdcCallback(int procedure, void *data)
             //[current fdcCallbackArmSync:(intptr_t)data];
             NSLog(@"fdcCallback EXT_ARM_SYNC");
             break;
-
+            
         default:
             break;
     }
@@ -459,16 +459,16 @@ static void *fdcCallback(int procedure, void *data)
 
 int CheckDownButton(int deviceNumber,int button)
 {
-	if(internal_input_state[deviceNumber].buttons&button)
+    if(internal_input_state[deviceNumber].buttons&button)
         return 1;
-	else
+    else
         return 0;
 }
 
 char CalculateDeviceLowByte(int deviceNumber)
 {
-	char returnValue = 0;
-
+    char returnValue = 0;
+    
     returnValue |= 0x01 & 0; // unknown
     returnValue |= 0x02 & 0; // unknown
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONL) ? (char)0x04 : (char)0;
@@ -477,14 +477,14 @@ char CalculateDeviceLowByte(int deviceNumber)
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONP) ? (char)0x20 : (char)0;
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONC) ? (char)0x40 : (char)0;
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONB) ? (char)0x80 : (char)0;
-
+    
     return returnValue;
 }
 
 char CalculateDeviceHighByte(int deviceNumber)
 {
-	char returnValue = 0;
-
+    char returnValue = 0;
+    
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONA)     ? (char)0x01 : (char)0;
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONLEFT)  ? (char)0x02 : (char)0;
     returnValue |= CheckDownButton(deviceNumber, INPUTBUTTONRIGHT) ? (char)0x04 : (char)0;
@@ -493,7 +493,7 @@ char CalculateDeviceHighByte(int deviceNumber)
     returnValue |= 0x20 & 0; // unknown
     returnValue |= 0x40 & 0; // unknown
     returnValue |= 0x80; // This last bit seems to indicate power and/or connectivity.
-
+    
     return returnValue;
 }
 
@@ -541,12 +541,13 @@ char CalculateDeviceHighByte(int deviceNumber)
 {
     if(videoBuffer)
         free(videoBuffer);
-
+    
     //HightResMode = 1;
     videoWidth = 320;
     videoHeight = 240;
     videoBuffer = (uint32_t*)malloc(videoWidth * videoHeight * 4);
-    frame = new VDLFrame;
+    frame = (VDLFrame*)malloc(sizeof(VDLFrame));
+    memset(frame, 0, sizeof(VDLFrame));
     fver2=fver1=0;
 }
 
@@ -555,8 +556,6 @@ char CalculateDeviceHighByte(int deviceNumber)
     nvramCopy = malloc(65536/2);
     memset(nvramCopy, 0, 65536/2);
     memcpy(nvramCopy, nvramhead, sizeof(nvramhead));
-    frame = (VDLFrame*)malloc(sizeof(VDLFrame));
-    memset(frame, 0, sizeof(VDLFrame));
 }
 
 - (void)loadBIOSes
@@ -567,7 +566,7 @@ char CalculateDeviceHighByte(int deviceNumber)
     assert(len==ROM1_SIZE);
     biosRom1Copy = (unsigned char *)malloc(len);
     memcpy(biosRom1Copy, [data bytes], len);
-
+    
     // "ROM 2 Japanese Character ROM" / Set it if we find it. It's not requiered for soem JAP games. We still have to init the memory tho
     NSString *rom2Path = [[self biosDirectoryPath] stringByAppendingPathComponent:@"rom2.rom"];
     data = [NSData dataWithContentsOfFile:rom2Path];
