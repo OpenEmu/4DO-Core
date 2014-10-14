@@ -60,9 +60,10 @@ inputState internal_input_state[6];
 
 @interface FreeDOGameCore () <OE3DOSystemResponderClient>
 {
+    NSString *romName;
+    
     unsigned char *biosRom1Copy;
     unsigned char *biosRom2Copy;
-    void *nvramCopy;
     VDLFrame *frame;
     
     NSFileHandle *isoStream;
@@ -99,10 +100,8 @@ static void *fdcCallback(int procedure, void *data)
             break;
         }
         case EXT_READ_NVRAM:
-            memcpy(data, current->nvramCopy, NVRAM_SIZE);
             break;
         case EXT_WRITE_NVRAM:
-            // ?
             break;
         case EXT_SWAPFRAME:
         {
@@ -177,6 +176,54 @@ static void *fdcCallback(int procedure, void *data)
     return (void*)0;
 }
 
+static void loadSaveFile(const char* path)
+{
+    FILE *file;
+    
+    file = fopen(path, "rb");
+    if ( !file )
+    {
+        return;
+    }
+    
+    size_t size = NVRAM_SIZE;
+    void *data = _freedo_Interface(FDP_GETP_NVRAM, (void*)0);
+    
+    if (size == 0 || !data)
+    {
+        fclose(file);
+        return;
+    }
+    
+    int rc = fread(data, sizeof(uint8_t), size, file);
+    if ( rc != size )
+    {
+        NSLog(@"Couldn't load save file.");
+    }
+    
+    NSLog(@"Loaded save file: %s", path);
+    
+    fclose(file);
+}
+
+static void writeSaveFile(const char* path)
+{
+    size_t size = NVRAM_SIZE;
+    void *data = _freedo_Interface(FDP_GETP_NVRAM, (void*)0);
+    
+    if(data != NULL && size > 0)
+    {
+        FILE *file = fopen(path, "wb");
+        if(file != NULL)
+        {
+            NSLog(@"Saving NVRAM %s. Size: %d bytes.", path, (int)size);
+            if(fwrite(data, sizeof(uint8_t), size, file) != size)
+                NSLog(@"Did not save file properly.");
+            fclose(file);
+        }
+    }
+}
+
 - (id)init
 {
     if((self = [super init]))
@@ -195,6 +242,8 @@ static void *fdcCallback(int procedure, void *data)
 #pragma mark Execution
 - (BOOL)loadFileAtPath:(NSString *)path error:(NSError **)error
 {
+    romName = [path copy];
+    
     NSString *isoPath;
     NSError *errorCue;
     
@@ -232,6 +281,32 @@ static void *fdcCallback(int procedure, void *data)
     VolumeHeader *header = (VolumeHeader*)sectorZero;
     sectorCount = (int)reverseBytes(header->blockCount);
     NSLog(@"Sector count is %d", sectorCount);
+
+    // init libfreedo
+    [self loadBIOSes];
+    [self initVideo];
+    
+    currentSector = 0;
+    sampleCurrent = 0;
+    memset(sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
+    
+    _freedo_Interface(FDP_INIT, (void*)*fdcCallback);
+    
+    // init NVRAM
+    memcpy(_freedo_Interface(FDP_GETP_NVRAM, (void*)0), nvramhead, sizeof(nvramhead));
+    
+    // load NVRAM save file
+    NSString *extensionlessFilename = [[path lastPathComponent] stringByDeletingPathExtension];
+    NSString *batterySavesDirectory = [current batterySavesDirectoryPath];
+
+    if([batterySavesDirectory length] != 0)
+    {
+        [[NSFileManager defaultManager] createDirectoryAtPath:batterySavesDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
+
+        NSString *filePath = [batterySavesDirectory stringByAppendingPathComponent:[extensionlessFilename stringByAppendingPathExtension:@"sav"]];
+
+        loadSaveFile([filePath UTF8String]);
+    }
     
     return YES;
 }
@@ -246,19 +321,6 @@ static void *fdcCallback(int procedure, void *data)
     _freedo_Interface(FDP_DO_EXECFRAME, frame); // FDP_DO_EXECFRAME_MT ?
 }
 
-- (void)setupEmulation
-{
-    [self loadBIOSes];
-    [self initNVRAM];
-    [self initVideo];
-    
-    currentSector = 0;
-    sampleCurrent = 0;
-    memset(sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
-    
-    _freedo_Interface(FDP_INIT, (void*)*fdcCallback);
-}
-
 - (void)resetEmulation
 {
     // looks like libfreedo cannot do this :|
@@ -266,6 +328,19 @@ static void *fdcCallback(int procedure, void *data)
 
 - (void)stopEmulation
 {
+    // save NVRAM file
+    NSString *extensionlessFilename = [[romName lastPathComponent] stringByDeletingPathExtension];
+    NSString *batterySavesDirectory = [self batterySavesDirectoryPath];
+    
+    if([batterySavesDirectory length] != 0)
+    {
+        [[NSFileManager defaultManager] createDirectoryAtPath:batterySavesDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
+        
+        NSString *filePath = [batterySavesDirectory stringByAppendingPathComponent:[extensionlessFilename stringByAppendingPathExtension:@"sav"]];
+        
+        writeSaveFile([filePath UTF8String]);
+    }
+    
     _freedo_Interface(FDP_DESTROY, (void*)0);
     [super stopEmulation];
 }
@@ -499,11 +574,6 @@ char CalculateDeviceHighByte(int deviceNumber)
 
 #pragma mark - FreeDoInterface
 //TODO: investigate these
-//-(void*)fdcGetPointerNVRAM
-//{
-//    return [self _freedoActionWithInterfaceFunction:FDP_GETP_NVRAM datum:(void*)0];
-//}
-//
 //-(void*)fdcGetPointerRAM
 //{
 //    return [self _freedoActionWithInterfaceFunction:FDP_GETP_RAMS datum:(void*)0];
@@ -549,13 +619,6 @@ char CalculateDeviceHighByte(int deviceNumber)
     frame = (VDLFrame*)malloc(sizeof(VDLFrame));
     memset(frame, 0, sizeof(VDLFrame));
     fver2=fver1=0;
-}
-
-- (void)initNVRAM
-{
-    nvramCopy = malloc(65536/2);
-    memset(nvramCopy, 0, 65536/2);
-    memcpy(nvramCopy, nvramhead, sizeof(nvramhead));
 }
 
 - (void)loadBIOSes
