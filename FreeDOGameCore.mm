@@ -306,6 +306,26 @@ static void writeSaveFile(const char* path)
         loadSaveFile([filePath UTF8String]);
     }
     
+    // Begin per-game hacks
+    // First check if we find these bytes at offset 0x0 found in some dumps
+    uint8_t bytes[] = { 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x02, 0x00, 0x01 };
+    [isoStream seekToFileOffset: 0x0];
+    NSData *dataTrackBuffer = [isoStream readDataOfLength: 16];
+    NSData *dataCompare = [[NSData alloc] initWithBytes:bytes length:sizeof(bytes)];
+    BOOL bytesFound = [dataTrackBuffer isEqualToData:dataCompare];
+    
+    [isoStream seekToFileOffset: bytesFound ? 0x10 : 0x0];
+    dataTrackBuffer = [isoStream readDataOfLength: 16];
+    
+    // TODO: build this out into a dict with hacks and 'fix_bit_' types for known games
+    uint8_t checkbytes[] = { 0xbb, 0x26, 0x8b, 0xf0, 0xdd, 0xe9, 0x70, 0x16, 0x9b, 0xaa, 0x50, 0x7f, 0x0c, 0x6f, 0xea, 0x98 }; // Samurai Shodown EU-US
+    dataCompare = [[NSData alloc] initWithBytes:checkbytes length:sizeof(bytes)];
+    [isoStream seekToFileOffset: bytesFound ? 0xA20 : 0x8E0];
+    dataTrackBuffer = [isoStream readDataOfLength: 16];
+    
+    if ([dataTrackBuffer isEqualToData:dataCompare])
+        _freedo_Interface(FDP_SET_FIX_MODE, (void*)FIX_BIT_GRAPHICS_STEP_Y); // Fixes Samurai Shodown backgrounds
+    
     return YES;
 }
 

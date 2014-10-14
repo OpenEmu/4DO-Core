@@ -308,9 +308,9 @@ FREEDOCORE_API void* __stdcall _freedo_Interface(int procedure, void *datum)
 	case FDP_SET_TEXQUALITY:
 		__tex__scaler=(intptr_t)datum;
 		break; 
-//	case FDP_SET_FIX_MODE:
-//		fixmode=(intptr_t)datum;
-//		break;
+	case FDP_SET_FIX_MODE:
+		fixmode=(intptr_t)datum;
+		break;
 //	case FDP_GET_FRAME_BITMAP:
 //		GetFrameBitmapParams* param = (GetFrameBitmapParams*)datum;
 //		Get_Frame_Bitmap(
