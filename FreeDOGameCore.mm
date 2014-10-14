@@ -72,8 +72,6 @@ inputState internal_input_state[6];
     int currentSector;
     BOOL isSwapFrameSignaled;
     
-    int fver1,fver2;
-    
     uint32_t *videoBuffer;
     int videoWidth, videoHeight;
     //uintptr_t sampleBuffer[TEMP_BUFFER_SIZE];
@@ -388,17 +386,12 @@ static void writeSaveFile(const char* path)
 {
     if(isSwapFrameSignaled)
     {
-        if(fver2==fver1)
-        {
-            isSwapFrameSignaled = NO;
-            struct BitmapCrop bmpcrop;
-            ScalingAlgorithm sca;
-            int rw, rh;
-            Get_Frame_Bitmap((VDLFrame *)frame, videoBuffer, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
-            fver1++;
-        }
+        isSwapFrameSignaled = NO;
+        struct BitmapCrop bmpcrop;
+        ScalingAlgorithm sca;
+        int rw, rh;
+        Get_Frame_Bitmap((VDLFrame *)frame, videoBuffer, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
     }
-    fver2=fver1;
     return videoBuffer;
 }
 
@@ -637,7 +630,6 @@ char CalculateDeviceHighByte(int deviceNumber)
     videoBuffer = (uint32_t*)malloc(videoWidth * videoHeight * 4);
     frame = (VDLFrame*)malloc(sizeof(VDLFrame));
     memset(frame, 0, sizeof(VDLFrame));
-    fver2=fver1=0;
 }
 
 - (void)loadBIOSes
