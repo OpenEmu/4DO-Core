@@ -286,8 +286,6 @@ static void writeSaveFile(const char* path)
     [self loadBIOSes];
     [self initVideo];
     
-    currentSector = 0;
-    sampleCurrent = 0;
     memset(sampleBuffer, 0, sizeof(int32_t) * TEMP_BUFFER_SIZE);
     
     _freedo_Interface(FDP_INIT, (void*)*fdcCallback);
@@ -342,6 +340,7 @@ static void writeSaveFile(const char* path)
     }
     
     _freedo_Interface(FDP_DESTROY, (void*)0);
+    [isoStream closeFile];
     [super stopEmulation];
 }
 
