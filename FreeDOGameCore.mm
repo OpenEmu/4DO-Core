@@ -311,18 +311,37 @@ static void writeSaveFile(const char* path)
     NSData *dataTrackBuffer = [isoStream readDataOfLength: 16];
     NSData *dataCompare = [[NSData alloc] initWithBytes:bytes length:sizeof(bytes)];
     BOOL bytesFound = [dataTrackBuffer isEqualToData:dataCompare];
-    
-    [isoStream seekToFileOffset: bytesFound ? 0x10 : 0x0];
-    dataTrackBuffer = [isoStream readDataOfLength: 16];
-    
-    // TODO: build this out into a dict with hacks and 'fix_bit_' types for known games
-    uint8_t checkbytes[] = { 0xbb, 0x26, 0x8b, 0xf0, 0xdd, 0xe9, 0x70, 0x16, 0x9b, 0xaa, 0x50, 0x7f, 0x0c, 0x6f, 0xea, 0x98 }; // Samurai Shodown EU-US
-    dataCompare = [[NSData alloc] initWithBytes:checkbytes length:sizeof(bytes)];
-    [isoStream seekToFileOffset: bytesFound ? 0xA20 : 0x8E0];
-    dataTrackBuffer = [isoStream readDataOfLength: 16];
-    
-    if ([dataTrackBuffer isEqualToData:dataCompare])
-        _freedo_Interface(FDP_SET_FIX_MODE, (void*)FIX_BIT_GRAPHICS_STEP_Y); // Fixes Samurai Shodown backgrounds
+
+    // Read disc header, these 8 bytes seem to be unique for each game
+    [isoStream seekToFileOffset: bytesFound ? 0x60 : 0x50];
+    dataTrackBuffer = [isoStream readDataOfLength: 8];
+
+    // Check if game requires hacks
+    NSDictionary *checkBytes = @{
+                                 //@"0004b0002fbc0678" : @(FIX_BIT_TIMING_1), // Crash 'n Burn (JP)
+                                 @"0004b0000d2cd096" : @(FIX_BIT_TIMING_1), // Crash 'n Burn (US)
+                                 //@"00042c002fee388c" : @(FIX_BIT_GRAPHICS_STEP_Y), // Samurai Shodown (JP)
+                                 @"0003b6003b6ab18c" : @(FIX_BIT_GRAPHICS_STEP_Y) // Samurai Shodown (EU-US) fixes backgrounds
+                                  };
+
+    for (id hex in checkBytes) {
+        // Convert string of hex to byte array
+        char buf[3];
+        buf[2] = '\0';
+        unsigned char *bytes = (unsigned char *)malloc([hex length]/2);
+        unsigned char *bp = bytes;
+        for (int i = 0; i < [hex length]; i += 2) {
+            buf[0] = [hex characterAtIndex:i];
+            buf[1] = [hex characterAtIndex:i+1];
+            *bp++ = strtol(buf, NULL, 16);
+        }
+
+        dataCompare = [NSData dataWithBytesNoCopy:bytes length:[hex length]/2 freeWhenDone:YES];
+
+        // Apply found FIX_BIT_* hack
+        if ([dataTrackBuffer isEqualToData:dataCompare])
+            _freedo_Interface(FDP_SET_FIX_MODE, (void*)[checkBytes[hex] integerValue]);
+    }
     
     return YES;
 }
