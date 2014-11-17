@@ -319,9 +319,43 @@ static void writeSaveFile(const char* path)
     // Check if game requires hacks
     NSDictionary *checkBytes = @{
                                  //@"0004b0002fbc0678" : @(FIX_BIT_TIMING_1), // Crash 'n Burn (JP)
-                                 @"0004b0000d2cd096" : @(FIX_BIT_TIMING_1), // Crash 'n Burn (US)
-                                 //@"00042c002fee388c" : @(FIX_BIT_GRAPHICS_STEP_Y), // Samurai Shodown (JP)
-                                 @"0003b6003b6ab18c" : @(FIX_BIT_GRAPHICS_STEP_Y) // Samurai Shodown (EU-US) fixes backgrounds
+                                 @"0004b0000d2cd096" : @(FIX_BIT_TIMING_1), // Crash 'n Burn (US) - fixes freeze after Total Eclipse preview
+                                 @"000320003c0f4cd6" : @(FIX_BIT_TIMING_1), // Space Hulk - Vengeance of the Blood Angels (EU-US) - fixes boot freeze
+                                 @"000384001bed10f4" : @(FIX_BIT_TIMING_1), // Blood Angels - Space Hulk (JP) - fixes in-game freezes but makes audio choppy
+                                 @"0004d40020aabe16" : @(FIX_BIT_TIMING_1), // Tsuukai Gameshow - Twisted (JP) - fixes boot freeze
+                                 @"0004d80009839b53" : @(FIX_BIT_TIMING_1), // Twisted - The Game Show (US) - fixes boot freeze, but has very long boot (a matter of minutes)
+                                 //@"0004fc0013222dcd" : @(FIX_BIT_TIMING_2), // Lost Eden (US) - makes FMV choppy, unneeded?
+                                 @"0002ae001f1638aa" : @(FIX_BIT_TIMING_2), // Microcosm (JP) - fixes boot freeze
+                                 @"0002ae00040de795" : @(FIX_BIT_TIMING_2), // Microcosm (US) - fixes boot freeze
+                                 //@"0004c2003e1c60f9" : @(FIX_BIT_TIMING_2), // Nova-Storm (JP) - unneeded?
+                                 //@"0004c4000930071d" : @(FIX_BIT_TIMING_2), // Novastorm (US) - unneeded?
+                                 //@"000320001195ead8" : @(FIX_BIT_TIMING_3), // Scramble Cobra (demo) (JP) - unneeded?
+                                 //@"0004f600394ba195" : @(FIX_BIT_TIMING_3), // Scramble Cobra (JP) - unneeded?
+                                 //@"0004f600304ef0ef" : @(FIX_BIT_TIMING_3), // Scramble Cobra (EU) - unneeded?
+                                 //@"0004f600207b64da" : @(FIX_BIT_TIMING_3), // Scramble Cobra (US) - unneeded?
+                                 @"0004d800207a1ec6" : @(FIX_BIT_TIMING_4), // Twisted - The Game Show (EU) - fixes boot freeze
+                                 @"0003e8001f84ae3b" : @(FIX_BIT_TIMING_4), // Virtual Quest - Pharaoh no Fuuin aka Seal of the Pharaoh (JP) - fixes load screen freeze, but has very long boot (a matter of minutes)
+                                 @"0003e80038575ddf" : @(FIX_BIT_TIMING_4), // Seal of the Pharaoh (US) - fixes load screen freeze
+                                 //@"000509102e0a80f4" : @(FIX_BIT_TIMING_5), // Immercenary (EU-US) - unneeded?
+                                 @"0004100000478a28" : @(FIX_BIT_TIMING_5), // Olympic Summer Games (US) - fixes boot freeze
+                                 @"0004b00017ff5284" : @(FIX_BIT_TIMING_5), // Phoenix 3 (EU-US) - fixes load screen freeze
+                                 //@"0002500017fab0ba" : @(FIX_BIT_TIMING_5), // Super Street Fighter II Turbo (EU) - unneeded?
+                                 //@"0002500007772ee0" : @(FIX_BIT_TIMING_5), // Super Street Fighter II X - Grand Master Challenge (JP) - unneeded?
+                                 //@"000250001c0e266b" : @(FIX_BIT_TIMING_5), // Super Street Fighter II Turbo (US) [FZSM3851] - unneeded?
+                                 //@"000250001023b13a" : @(FIX_BIT_TIMING_5), // Super Street Fighter II Turbo (CA-US) (RE1) - unneeded?
+                                 //@"000500003f03c29f" : @(FIX_BIT_TIMING_6), // Wing Commander III (EU-US) (Disc 1 of 4)
+                                 //@"000500001694a8a7" : @(FIX_BIT_TIMING_6), // Wing Commander III (US) (Disc 1 of 4)
+                                 //@"000500003b4f0a74" : @(FIX_BIT_TIMING_6), // Wing Commander III (EU-US) (Disc 2 of 4)
+                                 //@"0005000017992121" : @(FIX_BIT_TIMING_6), // Wing Commander III (US) (Disc 2 of 4)
+                                 //@"000500001aefec8b" : @(FIX_BIT_TIMING_6), // Wing Commander III (EU-US) (Disc 3 of 4)
+                                 //@"000500003d7875f5" : @(FIX_BIT_TIMING_6), // Wing Commander III (US) (Disc 3 of 4)
+                                 //@"000500001c8fab6a" : @(FIX_BIT_TIMING_6), // Wing Commander III (EU-US) (Disc 4 of 4)
+                                 //@"000500002f517924" : @(FIX_BIT_TIMING_6), // Wing Commander III (US) (Disc 4 of 4)
+                                 //@"000500000d073a51" : @(FIX_BIT_TIMING_7), // The Horde (EU-US) - hack seems to make things worse, audio skips but FMV is smooth
+                                 //@"000500001cdf59f6" : @(FIX_BIT_TIMING_7), // The Horde (JP) - hack seems to make things worse, audio skips but FMV is smooth
+                                 //@"00050000148ac2b2" : @(FIX_BIT_TIMING_7), // The Horde (US) - hack seems to make things worse, audio skips but FMV is smooth
+                                 //@"00042c002fee388c" : @(FIX_BIT_GRAPHICS_STEP_Y), // Samurai Shodown (JP) - unneeded?
+                                 @"0003b6003b6ab18c" : @(FIX_BIT_GRAPHICS_STEP_Y) // Samurai Shodown (EU-US) - fixes backgrounds
                                   };
 
     for (id hex in checkBytes) {
