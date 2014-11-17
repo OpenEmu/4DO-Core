@@ -92,8 +92,8 @@ static void *fdcCallback(int procedure, void *data)
         case EXT_READ_ROMS:
         {
             memcpy(data, current->biosRom1Copy, ROM1_SIZE);
-            void *biosRom2Dest = (void*)((intptr_t)data + ROM2_SIZE);
-            memcpy(biosRom2Dest, current->biosRom2Copy, ROM2_SIZE);
+            //void *biosRom2Dest = (void*)((intptr_t)data + ROM2_SIZE);
+            //memcpy(biosRom2Dest, current->biosRom2Copy, ROM2_SIZE);
             
             break;
         }
