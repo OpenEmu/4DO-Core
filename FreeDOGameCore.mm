@@ -382,11 +382,6 @@ static void writeSaveFile(const char* path)
 
 - (void)executeFrame
 {
-    [self executeFrameSkippingFrame:NO];
-}
-
-- (void)executeFrameSkippingFrame:(BOOL)skip
-{
     _freedo_Interface(FDP_DO_EXECFRAME, frame); // FDP_DO_EXECFRAME_MT ?
 }
 
@@ -485,25 +480,33 @@ static void writeSaveFile(const char* path)
 }
 
 #pragma mark - Save States
-- (BOOL)saveStateToFileAtPath:(NSString *)fileName
+
+- (void)saveStateToFileAtPath:(NSString *)fileName completionHandler:(void (^)(BOOL, NSError *))block
 {
     size_t size = (uintptr_t)_freedo_Interface(FDP_GET_SAVE_SIZE, (void*)0);
-    void *data = malloc(sizeof(uintptr_t)*size);
-    _freedo_Interface(FDP_DO_SAVE, data);
-    NSData *saveData = [NSData dataWithBytesNoCopy:data length:size freeWhenDone:YES];
-    NSLog(@"Game saved, length in bytes: %lu", saveData.length);
-    
-    return [saveData writeToFile:fileName atomically:NO];
+
+    NSMutableData *data = [NSMutableData dataWithLength:size];
+    _freedo_Interface(FDP_DO_SAVE, data.mutableBytes);
+    NSLog(@"Game saved, length in bytes: %lu", data.length);
+
+    NSError *error;
+    BOOL didSucceed = [data writeToFile:fileName options:0 error:&error];
+    block(didSucceed, error);
 }
 
-- (BOOL)loadStateFromFileAtPath:(NSString *)fileName
+- (void)loadStateFromFileAtPath:(NSString *)fileName completionHandler:(void (^)(BOOL, NSError *))block
 {
-    NSData *saveData = [NSData dataWithContentsOfFile:fileName];
-    size_t size = sizeof(uintptr_t)*saveData.length;
-    void *loadBuffer = malloc(size);
-    [saveData getBytes:loadBuffer];
-    
-    return _freedo_Interface(FDP_DO_LOAD, loadBuffer)!=0;
+    NSError *error;
+    NSData *saveData = [NSData dataWithContentsOfFile:fileName options:0 error:&error];
+    if (!saveData) {
+        block(NO, error);
+        return;
+    }
+
+    BOOL succeeded = _freedo_Interface(FDP_DO_LOAD, (void *)saveData.bytes) != NULL;
+
+    // This needs a better error handling.
+    block(succeeded, nil);
 }
 
 #pragma mark - Input
