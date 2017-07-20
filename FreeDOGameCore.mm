@@ -430,15 +430,20 @@ static void writeSaveFile(const char* path)
 }
 
 #pragma mark Video
-- (const void *)videoBuffer
+- (const void *)getVideoBufferWithHint:(void *)hint
 {
+    if(!hint) {
+        if (!videoBuffer) videoBuffer = (uint32_t*)malloc(videoWidth * videoHeight * 4);
+        hint = videoBuffer;
+    }
+
     if(isSwapFrameSignaled)
     {
         isSwapFrameSignaled = NO;
         struct BitmapCrop bmpcrop;
         ScalingAlgorithm sca;
         int rw, rh;
-        Get_Frame_Bitmap((VDLFrame *)frame, videoBuffer, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
+        Get_Frame_Bitmap((VDLFrame *)frame, hint, 0, &bmpcrop, videoWidth, videoHeight, false, true, false, sca, &rw, &rh);
     }
     return videoBuffer;
 }
@@ -461,11 +466,6 @@ static void writeSaveFile(const char* path)
 - (GLenum)pixelType
 {
     return GL_UNSIGNED_INT_8_8_8_8_REV;
-}
-
-- (GLenum)internalPixelFormat
-{
-    return GL_RGB8;
 }
 
 #pragma mark - Audio
@@ -677,13 +677,9 @@ char CalculateDeviceHighByte(int deviceNumber)
 
 - (void)initVideo
 {
-    if(videoBuffer)
-        free(videoBuffer);
-    
     //HightResMode = 1;
     videoWidth = 320;
     videoHeight = 240;
-    videoBuffer = (uint32_t*)malloc(videoWidth * videoHeight * 4);
     frame = (VDLFrame*)malloc(sizeof(VDLFrame));
     memset(frame, 0, sizeof(VDLFrame));
 }
