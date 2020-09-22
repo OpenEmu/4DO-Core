@@ -374,7 +374,6 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "4DO" */;
@@ -534,7 +533,7 @@
 					"$(OTHER_CFLAGS)",
 					"-g",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.openemu.${PRODUCT_NAME:identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.openemu.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = 4DO;
 				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/core/\" \"$(PROJECT_DIR)/libcue/\"/** \"$(PROJECT_DIR)/libfreedo/\"";
 				WRAPPER_EXTENSION = oecoreplugin;
@@ -569,7 +568,7 @@
 					"$(OTHER_CFLAGS)",
 					"-g",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.openemu.${PRODUCT_NAME:identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.openemu.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = 4DO;
 				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/core/\" \"$(PROJECT_DIR)/libcue/\"/** \"$(PROJECT_DIR)/libfreedo/\"";
 				WRAPPER_EXTENSION = oecoreplugin;
