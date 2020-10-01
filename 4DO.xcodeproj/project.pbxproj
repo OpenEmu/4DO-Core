@@ -114,7 +114,7 @@
 		089C167EFE841241C02AAC07 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		37E8246D172B7BEB00E58D77 /* OE3DOSystemResponderClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OE3DOSystemResponderClient.h; path = ../OpenEmu/3DO/OE3DOSystemResponderClient.h; sourceTree = "<group>"; };
+		37E8246D172B7BEB00E58D77 /* OE3DOSystemResponderClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OE3DOSystemResponderClient.h; path = ../OpenEmu/SystemPlugins/3DO/OE3DOSystemResponderClient.h; sourceTree = "<group>"; };
 		575ACBE81582C37400EAC45A /* cd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cd.c; sourceTree = "<group>"; };
 		575ACBE91582C37400EAC45A /* cd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cd.h; sourceTree = "<group>"; };
 		575ACBEA1582C37400EAC45A /* cdtext.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cdtext.c; sourceTree = "<group>"; };
