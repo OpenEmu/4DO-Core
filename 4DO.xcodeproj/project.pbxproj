@@ -35,7 +35,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		37E8246E172B7BEB00E58D77 /* OE3DOSystemResponderClient.h in Resources */ = {isa = PBXBuildFile; fileRef = 37E8246D172B7BEB00E58D77 /* OE3DOSystemResponderClient.h */; };
 		575ACC2D1582D50400EAC45A /* cd.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBE81582C37400EAC45A /* cd.c */; };
 		575ACC2E1582D50400EAC45A /* cdtext.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEA1582C37400EAC45A /* cdtext.c */; };
 		575ACC2F1582D50400EAC45A /* cue_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEC1582C37400EAC45A /* cue_parser.c */; };
@@ -401,7 +400,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
-				37E8246E172B7BEB00E58D77 /* OE3DOSystemResponderClient.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,7 +417,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = /usr/bin/openemu_rb_automation.rb;
+			shellScript = "/usr/bin/openemu_rb_automation.rb\n";
 		};
 		82B9195210150EA2007BD6DB /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
