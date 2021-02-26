@@ -37,9 +37,7 @@
 /* Begin PBXBuildFile section */
 		575ACC2D1582D50400EAC45A /* cd.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBE81582C37400EAC45A /* cd.c */; };
 		575ACC2E1582D50400EAC45A /* cdtext.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEA1582C37400EAC45A /* cdtext.c */; };
-		575ACC2F1582D50400EAC45A /* cue_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEC1582C37400EAC45A /* cue_parser.c */; };
 		575ACC301582D50400EAC45A /* cue_parser.ym in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEE1582C37400EAC45A /* cue_parser.ym */; };
-		575ACC311582D50400EAC45A /* cue_scanner.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBEF1582C37400EAC45A /* cue_scanner.c */; };
 		575ACC321582D50400EAC45A /* cue_scanner.lm in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF01582C37400EAC45A /* cue_scanner.lm */; };
 		575ACC331582D50400EAC45A /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF71582C37400EAC45A /* rem.c */; };
 		575ACC341582D50400EAC45A /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 575ACBF91582C37400EAC45A /* time.c */; };
@@ -441,9 +439,7 @@
 			files = (
 				575ACC2D1582D50400EAC45A /* cd.c in Sources */,
 				575ACC2E1582D50400EAC45A /* cdtext.c in Sources */,
-				575ACC2F1582D50400EAC45A /* cue_parser.c in Sources */,
 				575ACC301582D50400EAC45A /* cue_parser.ym in Sources */,
-				575ACC311582D50400EAC45A /* cue_scanner.c in Sources */,
 				575ACC321582D50400EAC45A /* cue_scanner.lm in Sources */,
 				575ACC331582D50400EAC45A /* rem.c in Sources */,
 				575ACC341582D50400EAC45A /* time.c in Sources */,
@@ -524,7 +520,6 @@
 				);
 				OTHER_CFLAGS = (
 					"-I.",
-					"-llibcue",
 					"-DPROFILE_PERFORMANCE",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
@@ -559,7 +554,6 @@
 				);
 				OTHER_CFLAGS = (
 					"-I.",
-					"-llibcue",
 					"-DPROFILE_PERFORMANCE",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
